@@ -1,0 +1,20 @@
+# IDE
+**/.idea
+
+# Dependies
+**/node_modules/
+
+# Build
+**/dist/
+**/.next/
+**/out/
+**/build/
+**/.vercel
+
+# ENV
+**/*.env
+**/.env*.local
+
+# Typescript
+**/*.tsbuildinfo
+**/next-env.d.ts
