@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  db-accounts:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=accounts
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5430:5432"
+    volumes:
+      - accounts-data:/var/lib/postgresql/data
+
+  db-notifications:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=notifications
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5431:5432"
+    volumes:
+      - notifications-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db-accounts
+      - db-notifications
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq/
+
+volumes:
+  pgadmin-data:
+  accounts-data:
+  notifications-data:
+  rabbitmq-data:

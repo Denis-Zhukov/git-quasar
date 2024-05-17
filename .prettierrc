@@ -1,0 +1,14 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "useTabs": false,
+  "jsxSingleQuote": true,
+  "bracketSpacing": true,
+  "endOfLine": "auto",
+  "prettier/prettier": [
+    "error",
+    {
+      "printWidth": 120
+    }
+  ]
+}
