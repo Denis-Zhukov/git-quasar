@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id       String @id @default(uuid())
+  email    String @unique
+  username String @unique
+  salt     String
+
+  confirmed   Boolean @default(false)
+  blocked     Boolean @default(false)
+  deactivated Boolean @default(false)
+
+  avatar  String?
+  name    String?
+  surname String?
+  bio     String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  userRoles      userRoles[]
+  subscriptions  subscriber[]   @relation("user_subscriptions")
+  followers      subscriber[]   @relation("follower_subscriptions")
+  sessions       session[]
+  recoveries     recovery[]
+  confirmations  confirmation[]
+  commentUsers   comment[]      @relation("user_comment")
+  commentSenders comment[]      @relation("sender_comment")
+
+  @@map("users")
+}
+
+model session {
+  id            String @id @default(uuid())
+  userId        String @map("user_id")
+  user_agent    String
+  ip_address    String
+  refresh_token String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  user user @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+model confirmation {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  user user @relation(fields: [userId], references: [id])
+
+  @@map("confirmations")
+}
+
+model recovery {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  user user @relation(fields: [userId], references: [id])
+
+  @@map("recoveries")
+}
+
+model role {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  userRoles userRoles[]
+
+  @@map("roles")
+}
+
+model userRoles {
+  userId String @map("user_id")
+  roleId Int    @map("role_id")
+
+  user user @relation(fields: [userId], references: [id])
+  role role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model subscriber {
+  userId     String @map("user_id")
+  followerId String @map("follower_id")
+
+  user     user @relation("user_subscriptions", fields: [userId], references: [id])
+  follower user @relation("follower_subscriptions", fields: [followerId], references: [id])
+
+  @@id([userId, followerId])
+  @@map("subscribers")
+}
+
+model comment {
+  id       String @id @default(uuid())
+  userId   String @map("user_id")
+  senderId String @map("sender_id")
+  content  String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  user   user @relation("user_comment", fields: [userId], references: [id])
+  sender user @relation("sender_comment", fields: [senderId], references: [id])
+
+  @@map("comments")
+}
