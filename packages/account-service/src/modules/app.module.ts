@@ -1,7 +1,11 @@
+import { UserModule } from './user/user.module';
+
+import { ConfigModule } from './config/config.module';
+
 import { Module } from '@nestjs/common';
 
 @Module({
-    imports: [],
+    imports: [ConfigModule, UserModule],
     controllers: [],
     providers: [],
 })
