@@ -1,4 +1,4 @@
-import { Catch, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Catch } from '@nestjs/common';
 import { BaseRpcExceptionFilter, RpcException } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
 

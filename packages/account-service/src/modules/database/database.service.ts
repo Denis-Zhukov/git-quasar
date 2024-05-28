@@ -1,7 +1,7 @@
-import { Roles } from '../../constants/roles';
-
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+
+import { Roles } from '../../constants/roles';
 
 @Injectable()
 export class DatabaseService extends PrismaClient implements OnModuleInit {

@@ -10,8 +10,8 @@ import {
     Res,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
 import { Response } from 'express';
+import { lastValueFrom } from 'rxjs';
 
 @Controller('account')
 export class AccountServiceController {

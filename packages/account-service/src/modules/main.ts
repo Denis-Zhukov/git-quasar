@@ -1,10 +1,9 @@
-import { AppModule } from './app.module';
-
-import { ValidationExceptionFilter } from '../utils/validation-exception-filter';
-
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ValidationPipe } from '@nestjs/common';
+
+import { ValidationExceptionFilter } from '../utils/validation-exception-filter';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(

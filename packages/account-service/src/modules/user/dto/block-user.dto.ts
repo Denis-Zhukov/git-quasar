@@ -2,8 +2,8 @@ import { IsBoolean, IsUUID } from 'class-validator';
 
 export class BlockUserDto {
     @IsUUID('4')
-    id: string;
+        id: string;
 
     @IsBoolean()
-    blocked: boolean;
+        blocked: boolean;
 }

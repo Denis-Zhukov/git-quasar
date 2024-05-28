@@ -1,15 +1,14 @@
-import { UserService } from './user.service';
-
-import {
-    CreateUserDto,
-    UserIdDto,
-    BlockUserDto,
-    DeactivateUserDto,
-    ConfirmAccountDto,
-} from './dto';
-
 import { Controller, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+
+import {
+    BlockUserDto,
+    ConfirmAccountDto,
+    CreateUserDto,
+    DeactivateUserDto,
+    UserIdDto,
+} from './dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -18,9 +17,9 @@ export class UserController {
     @MessagePattern('account.user.all')
     public async getAll(
         @Payload('_offset', new DefaultValuePipe(0), ParseIntPipe)
-        offset: number,
+            offset: number,
         @Payload('_limit', new DefaultValuePipe(10), ParseIntPipe)
-        limit: number,
+            limit: number,
     ) {
         return this.service.getAllUsers(limit, offset);
     }

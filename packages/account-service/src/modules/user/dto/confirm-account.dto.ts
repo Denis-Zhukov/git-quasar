@@ -2,8 +2,8 @@ import { IsBoolean, IsUUID } from 'class-validator';
 
 export class ConfirmAccountDto {
     @IsUUID('4')
-    id: string;
+        id: string;
 
     @IsBoolean()
-    confirmed: boolean;
+        confirmed: boolean;
 }

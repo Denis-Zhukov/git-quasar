@@ -1,11 +1,9 @@
-import { CreateUserData } from './types';
-
-import { DatabaseService } from '../database/database.service';
-
-import { Roles } from '../../constants/roles';
-
 import { Injectable } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
+
+import { Roles } from '../../constants/roles';
+import { DatabaseService } from '../database/database.service';
+import { CreateUserData } from './types';
 
 @Injectable()
 export class UserService {

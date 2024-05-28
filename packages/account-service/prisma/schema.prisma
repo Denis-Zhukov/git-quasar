@@ -39,11 +39,11 @@ model user {
 }
 
 model session {
-  id            String @id @default(uuid())
-  userId        String @map("user_id")
-  user_agent    String
-  ip_address    String
-  refresh_token String
+  id           String @id @default(uuid())
+  userId       String @map("user_id")
+  userAgent    String @map("user_agent")
+  ipAddress    String @map("ip_address")
+  refreshToken String @map("refresh_token")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt() @map("updated_at")

@@ -15,6 +15,10 @@ dist
 build
 .next
 node_modules
+next-env.d.ts
+.vercel
+out
+coverage
 
 # Logs
 logs
