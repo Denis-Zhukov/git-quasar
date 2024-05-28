@@ -1,5 +1,3 @@
-import { AppService } from './app.service';
-
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
