@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import styled, { css } from 'styled-components';
 
 export const Header = styled.header`
@@ -38,6 +39,15 @@ export const RightBlock = styled.div`
         display: flex;
         align-items: center;
         gap: ${theme.gap.m}px;
+    `}
+`;
+
+export const CreateRepo = styled(Link)`
+    ${({ theme }) => css`
+        color: ${theme.color.primary};
+        text-decoration: none;
+        font-weight: ${theme.weight.bold};
+        font-size: ${theme.fontSize.xxl}px;
     `}
 `;
 

@@ -2,12 +2,11 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Alert, Button, CircularProgress, TextField } from '@/components/mui';
+import { useAuthRedirect } from '@/hooks/auth-redirect';
 import { useAppSelector } from '@/hooks/redux-toolkit';
 import { useActions } from '@/hooks/useActionts';
 import { selectAuth } from '@/store/slices/auth/selectors';
@@ -17,6 +16,7 @@ import type { LoginForm, LoginPageProps } from './types';
 import { loginSchema } from './validation';
 
 export const LoginPage = ({ params: { locale } }: LoginPageProps) => {
+    useAuthRedirect();
     const t = useTranslations('login-form');
     const {
         register,
@@ -27,12 +27,7 @@ export const LoginPage = ({ params: { locale } }: LoginPageProps) => {
         resolver: yupResolver(loginSchema),
     });
     const { login } = useActions();
-    const { isLoading, error, authorized } = useAppSelector(selectAuth);
-    const router = useRouter();
-
-    useEffect(() => {
-        if (authorized) router.replace('/');
-    }, [authorized]);
+    const { isLoading, error } = useAppSelector(selectAuth);
 
     const onSubmit = handleSubmit(({ password, usernameOrEmail }, event) => {
         event?.preventDefault();

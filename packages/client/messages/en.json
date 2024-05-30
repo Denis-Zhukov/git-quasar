@@ -56,9 +56,20 @@
     "sign-in": "Sign In",
     "sign-up": "Sign Up",
     "russian": "Russian",
-    "english": "English"
+    "english": "English",
+    "create-repo": "Create repository"
   },
   "main": {
     "title": "GitQuasar"
+  },
+  "create-repo": {
+    "title": "Creating a repository",
+    "name": {
+      "label": "Repository name",
+      "required": "Repository name is required",
+      "wrong": "Repo name: only letters, numbers, and hyphens"
+    },
+    "private": "Private",
+    "create": "Create"
   }
 }

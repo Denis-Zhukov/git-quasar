@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Repository {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  name        String
+  main_branch String?
+  private     Boolean
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  Branch       Branch[]
+  Collaborator Collaborator[]
+  Issue        Issue[]
+
+  @@map("repositories")
+}
+
+model Branch {
+  repositoryId String @map("repository_id")
+  name         String @unique
+
+  repository Repository @relation(fields: [repositoryId], references: [id])
+
+  @@map("branches")
+}
+
+model Collaborator {
+  repositoryId String @map("repository_id")
+  userId       String @unique @map("user_id")
+
+  repository Repository @relation(fields: [repositoryId], references: [id])
+
+  @@map("collaborators")
+}
+
+model Favorite {
+  userId       String @map("user_id")
+  repositoryId String @map("repository_id")
+
+  @@unique([userId, repositoryId])
+  @@map("favorites")
+}
+
+model Issue {
+  id           String   @id @default(uuid())
+  repositoryId String   @map("repository_id")
+  title        String
+  qustion      String
+  closed       Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  repository   Repository     @relation(fields: [repositoryId], references: [id])
+  IssueMessage IssueMessage[]
+
+  @@map("issues")
+}
+
+model IssueMessage {
+  id        String   @id @default(uuid())
+  issueId   String   @map("issue_id")
+  userId    String   @map("user_id")
+  text      String
+  likes     Int
+  dislikes  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  issue Issue @relation(fields: [issueId], references: [id])
+}

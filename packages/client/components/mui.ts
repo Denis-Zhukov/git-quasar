@@ -7,5 +7,7 @@ export {
     Menu,
     MenuItem,
     Select,
+    Switch,
     TextField,
+    Tooltip,
 } from '@mui/material';

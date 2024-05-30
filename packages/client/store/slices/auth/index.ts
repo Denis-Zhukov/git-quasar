@@ -73,6 +73,9 @@ const authSlice = createSliceWithThunks({
                 return user;
             },
             {
+                settled: (state) => {
+                    state.isLoading = false;
+                },
                 pending: (state) => {
                     state.isLoading = true;
                 },
@@ -96,9 +99,6 @@ const authSlice = createSliceWithThunks({
                     state.username = username;
                     state.roles = roles;
                     state.avatar = avatar;
-                },
-                settled: (state) => {
-                    state.isLoading = false;
                 },
             },
         ),

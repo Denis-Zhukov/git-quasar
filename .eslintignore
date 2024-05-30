@@ -2,3 +2,5 @@ dist
 build
 .next
 node_modules
+generated
+prisma
