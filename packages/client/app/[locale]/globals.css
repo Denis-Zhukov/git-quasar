@@ -7,5 +7,12 @@
 html,
 body {
     max-width: 100vw;
+    min-height: 100vh;
     overflow-x: hidden;
+    background: rgba(15, 18, 20, 0.8);
+}
+
+body{
+    display: flex;
+    flex-direction: column;
 }

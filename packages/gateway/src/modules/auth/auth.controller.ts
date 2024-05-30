@@ -1,6 +1,8 @@
 import {
+    BadRequestException,
     Body,
     Controller,
+    Get,
     HttpStatus,
     Inject,
     Post,
@@ -14,7 +16,22 @@ import { firstValueFrom } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
-    constructor(@Inject('ACCOUNT_SERVICE') private rmq: ClientProxy) {}
+    constructor(
+        @Inject('ACCOUNT_SERVICE') private accountRmq: ClientProxy,
+        @Inject('NOTIFICATION_SERVICE') private notificationRmq: ClientProxy,
+    ) {}
+
+    @Post('register')
+    public async register(@Body() body: object) {
+        try {
+            const response = this.accountRmq.send('account.user.create', {
+                ...body,
+            });
+            return await firstValueFrom(response);
+        } catch (e) {
+            throw new BadRequestException(e);
+        }
+    }
 
     @Post('login')
     public async login(
@@ -29,7 +46,7 @@ export class AuthController {
             req.headers['x-forwarded-for'];
 
         try {
-            const response = this.rmq.send('account.auth.login', {
+            const response = this.accountRmq.send('account.auth.login', {
                 ...body,
                 userAgent,
                 ipAddress,
@@ -37,10 +54,8 @@ export class AuthController {
 
             const data = await firstValueFrom(response);
             if (!data) return res.sendStatus(HttpStatus.UNAUTHORIZED);
-            const { accessToken, refreshToken } = data;
-            return res
-                .cookie('refresh-token', refreshToken)
-                .json({ accessToken });
+            const { refreshToken, ...restData } = data;
+            return res.cookie('refresh-token', refreshToken).json(restData);
         } catch (e) {
             return res.status(HttpStatus.UNAUTHORIZED).json(e);
         }
@@ -49,7 +64,9 @@ export class AuthController {
     @Post('refresh')
     public async refresh(@Body() body: object) {
         try {
-            const response = this.rmq.send('account.auth.refresh', { ...body });
+            const response = this.accountRmq.send('account.auth.refresh', {
+                ...body,
+            });
 
             return await firstValueFrom(response);
         } catch (e) {

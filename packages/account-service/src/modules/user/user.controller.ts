@@ -1,5 +1,10 @@
-import { Controller, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+    Controller,
+    DefaultValuePipe,
+    Inject,
+    ParseIntPipe,
+} from '@nestjs/common';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 
 import {
     BlockUserDto,
@@ -12,7 +17,10 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private service: UserService) {}
+    constructor(
+        private service: UserService,
+        @Inject('NOTIFICATION_SERVICE') private accountRmq: ClientProxy,
+    ) {}
 
     @MessagePattern('account.user.all')
     public async getAll(
@@ -31,7 +39,16 @@ export class UserController {
 
     @MessagePattern('account.user.create')
     public async create(@Payload() dto: CreateUserDto) {
-        return this.service.createUser(dto);
+        const { idLink, username, email } = await this.service.createUser(dto);
+        const response = this.accountRmq.send(
+            'notification.auth.confirm-email',
+            {
+                username,
+                email,
+                url: `http://localhost:3000/account/confirm/${idLink}`,
+            },
+        );
+        return response;
     }
 
     @MessagePattern('account.user.block')

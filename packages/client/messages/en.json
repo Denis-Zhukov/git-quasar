@@ -1,0 +1,48 @@
+{
+  "login-form": {
+    "username": "Username/email",
+    "password": "Password",
+    "sign-in": "Sign In",
+    "to-register-text": "Don't have account?",
+    "to-register": "Sign Up",
+    "wrong": "Wrong username/email or password",
+    "login-error": "Username/email is required",
+    "password-error": "Password is required"
+  },
+  "register-form": {
+    "username": {
+      "label": "Username",
+      "required": "Username is required",
+      "regex": "Username must be alphanumeric\nMin length is 2\nThe first character must be a letter"
+    },
+    "email": {
+      "label": "Email",
+      "required": "Email is required",
+      "incorrect": "Invalid email. Example: example@gmail.com"
+    },
+    "password": {
+      "label": "Password",
+      "required": "Password is required",
+      "regex": "Minimum eight characters\nAt least one letter and one number"
+    },
+    "confirm-password": {
+      "label": "Confirm password",
+      "required": "Passwords do not match",
+      "different": "Passwords do not match"
+    },
+    "sign-up": "Sign Up",
+    "to-login-text": "Don't have an account?",
+    "to-login": "Sign In",
+    "success": "Account has been created",
+    "need-confirm": "E-mail confirmation letter sent"
+  },
+  "confirm-email": {
+    "title": "Confirm your email",
+    "text": "A message has been sent to your email\nYou need to click the link in the message to confirm your email",
+    "subtext": "If you can't find the message, check your spam folder"
+  },
+  "email-confirmed": {
+    "title": "Success!",
+    "text": "You have successfully verified your email"
+  }
+}

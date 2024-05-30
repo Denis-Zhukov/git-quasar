@@ -17,6 +17,17 @@ import { AuthController } from './auth.controller';
                     },
                 },
             },
+            {
+                name: 'NOTIFICATION_SERVICE',
+                transport: Transport.RMQ,
+                options: {
+                    urls: ['amqp://admin:admin@localhost:5672'],
+                    queue: 'notifications_queue',
+                    queueOptions: {
+                        durable: false,
+                    },
+                },
+            },
         ]),
     ],
     controllers: [AuthController],

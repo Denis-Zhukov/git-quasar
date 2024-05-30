@@ -1,18 +1,14 @@
+import axios from 'axios';
+
 import { URLS } from '@/constants/urls';
 
 import type { Payload, ResponseData } from './types';
 
 export const authService = {
     login: async (data: Payload) => {
-        const response = await fetch(URLS.login, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            method: 'POST',
-            credentials: 'include',
+        const response = await axios.post<ResponseData>(URLS.login, data, {
+            withCredentials: true,
         });
-        return (await response.json()) as Promise<ResponseData>;
+        return response.data;
     },
 };

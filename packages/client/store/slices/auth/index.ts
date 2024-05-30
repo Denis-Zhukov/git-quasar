@@ -1,5 +1,3 @@
-'use client';
-
 import { authService } from '@/services/auth';
 import { LoginData } from '@/store/slices/auth/types';
 import { setAccessToken } from '@/utils/local-storage-utils';
@@ -27,8 +25,15 @@ const authSlice = createSliceWithThunks({
     reducers: (create) => ({
         login: create.asyncThunk(
             async (data: LoginData, thunkAPI) => {
-                const { accessToken } = await authService.login(data);
-                setAccessToken(accessToken);
+                try {
+                    const responseData = await authService.login(data);
+                    return responseData;
+                } catch (e: any) {
+                    if ('message' in e) {
+                        return thunkAPI.rejectWithValue(e?.message);
+                    }
+                    return thunkAPI.rejectWithValue('Unknown error');
+                }
             },
             {
                 pending: (state) => {
@@ -36,6 +41,23 @@ const authSlice = createSliceWithThunks({
                 },
                 rejected: (state, action) => {
                     state.error = action.payload ?? action.error;
+                    state.username = null;
+                    state.authorized = false;
+                },
+                fulfilled: (
+                    state,
+                    {
+                        payload: {
+                            user: { roles, username },
+                            accessToken,
+                        },
+                    },
+                ) => {
+                    state.authorized = true;
+                    state.error = null;
+                    setAccessToken(accessToken);
+                    state.username = username;
+                    state.roles = roles;
                 },
                 settled: (state) => {
                     state.isLoading = false;
