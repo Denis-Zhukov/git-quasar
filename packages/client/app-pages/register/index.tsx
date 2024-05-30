@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Button, CircularProgress, TextField } from '@/components/mui';
+import { useAuthRedirect } from '@/hooks/auth-redirect';
 import { useRegisterMutation } from '@/store/quries/auth';
 
 import { LoginBlock, RegisterWrapper, WordWrapBlock } from './style';
@@ -15,6 +16,7 @@ import type { RegisterForm, RegisterPageProps } from './types';
 import { generateRegisterSchema } from './validation';
 
 export const RegisterPage = ({ params: { locale } }: RegisterPageProps) => {
+    useAuthRedirect();
     const t = useTranslations('register-form');
     const [send, { isLoading, isSuccess }] = useRegisterMutation();
     const {

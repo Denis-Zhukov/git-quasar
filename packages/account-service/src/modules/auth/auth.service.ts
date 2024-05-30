@@ -4,6 +4,7 @@ import { compare } from 'bcrypt';
 import { sign, verify } from 'jsonwebtoken';
 
 import { DatabaseService } from '../database/database.service';
+import { CheckDto } from './dto/check.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
@@ -15,13 +16,13 @@ export class AuthService {
 
     private generateAccessToken(payload: string | object) {
         return sign(payload, process.env.JWT_SECRET_ACCESS, {
-            expiresIn: process.env.ACCESS_EXPIRES_IN,
+            expiresIn: +process.env.ACCESS_EXPIRES_IN,
         });
     }
 
     private generateRefreshToken(payload: string | object) {
         return sign(payload, process.env.JWT_SECRET_REFRESH, {
-            expiresIn: process.env.REFRESH_EXPIRES_IN,
+            expiresIn: +process.env.REFRESH_EXPIRES_IN,
         });
     }
 
@@ -98,5 +99,20 @@ export class AuthService {
 
     async logout({ refreshToken }: LogoutDto) {
         return this.db.session.deleteMany({ where: { refreshToken } });
+    }
+
+    async check({ accessToken }: CheckDto) {
+        const { id } = verify(
+            accessToken,
+            process.env.JWT_SECRET_ACCESS,
+        ) as JwtPayload;
+        const user = await this.db.user.findUnique({
+            where: { id },
+            include: { userRoles: { include: { role: true } } },
+        });
+
+        const roles = user.userRoles.map(({ role: { name } }) => name);
+
+        return { id, roles };
     }
 }

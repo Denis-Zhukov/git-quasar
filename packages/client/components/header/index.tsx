@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { Menu, MenuItem, Select } from '@/components/mui';
+import { Menu, MenuItem, Select, Tooltip } from '@/components/mui';
 import { URLS } from '@/constants/urls';
 import { useAppSelector } from '@/hooks/redux-toolkit';
 import { useActions } from '@/hooks/useActionts';
@@ -17,6 +17,7 @@ import { selectAuth } from '@/store/slices/auth/selectors';
 import {
     Avatar,
     Buttons,
+    CreateRepo,
     Header as HeaderWrapper,
     Nav,
     RightBlock,
@@ -69,6 +70,13 @@ export const Header = () => {
             </Nav>
 
             <RightBlock>
+                {authorized && (
+                    <Tooltip title={t('create-repo')}>
+                        <CreateRepo href={`/${locale}/create-repo`}>
+                            +
+                        </CreateRepo>
+                    </Tooltip>
+                )}
                 <Select
                     value={locale}
                     onChange={handleChange}

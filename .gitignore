@@ -32,3 +32,6 @@ lerna-debug.log*
 # Tests
 coverage
 .nyc_output
+
+generated
+repositories

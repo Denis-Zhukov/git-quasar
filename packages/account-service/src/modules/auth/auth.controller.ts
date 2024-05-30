@@ -1,7 +1,8 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AuthService } from './auth.service';
+import { CheckDto } from './dto/check.dto';
 import { LoginDto } from './dto/login.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
@@ -23,5 +24,10 @@ export class AuthController {
     @MessagePattern('account.auth.logout')
     public async logout(@Payload() dto: LogoutDto) {
         return this.service.logout(dto);
+    }
+
+    @MessagePattern('account.auth.check')
+    public async check(@Payload() dto: CheckDto) {
+        return this.service.check(dto);
     }
 }

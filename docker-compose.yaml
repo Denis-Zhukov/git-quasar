@@ -23,6 +23,17 @@ services:
     volumes:
       - notifications-data:/var/lib/postgresql/data
 
+  db-repositories:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=repositories
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - repositories-data:/var/lib/postgresql/data
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -51,4 +62,5 @@ volumes:
   pgadmin-data:
   accounts-data:
   notifications-data:
+  repositories-data:
   rabbitmq-data:

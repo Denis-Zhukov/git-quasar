@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
 import { Wrapper } from '@/app-pages/email-confirmed/style';
@@ -9,10 +9,11 @@ import { Wrapper } from '@/app-pages/email-confirmed/style';
 export const EmailConfirmedPage = () => {
     const t = useTranslations('email-confirmed');
 
+    const locale = useLocale();
     const router = useRouter();
     useEffect(() => {
         const timer = setTimeout(() => {
-            router.replace('/');
+            router.replace(`/${locale}/login`);
         }, 1000);
         return () => clearTimeout(timer);
     }, []);
