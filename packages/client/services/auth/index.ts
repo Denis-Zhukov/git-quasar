@@ -11,4 +11,14 @@ export const authService = {
         });
         return response.data;
     },
+    refresh: async () => {
+        const response = await axios.post<ResponseData>(
+            URLS.refresh,
+            {},
+            {
+                withCredentials: true,
+            },
+        );
+        return response.data;
+    },
 };

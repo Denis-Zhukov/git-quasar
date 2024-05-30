@@ -44,5 +44,21 @@
   "email-confirmed": {
     "title": "Успех!",
     "text": "Вы успешно подтвердители почту"
+  },
+  "header": {
+    "home": "Главная",
+    "repos": "Репозитории",
+    "about-us": "О нас",
+    "pricing": "Цены",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "logout": "Выйти",
+    "sign-in": "Войти",
+    "sign-up": "Зарегистрироваться",
+    "russian": "Русский",
+    "english": "Английский"
+  },
+  "main": {
+    "title": "GitQuasar"
   }
 }

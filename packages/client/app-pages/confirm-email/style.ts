@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
     place-items: center;
     flex-grow: 1;
 
-    background: url('/images/stars-space.jpg') no-repeat center;
+    background: url('/images/stars-space.png') no-repeat center;
     animation: moveBackground 30s linear infinite;
 
     main {

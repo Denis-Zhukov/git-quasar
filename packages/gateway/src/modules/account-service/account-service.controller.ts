@@ -2,11 +2,13 @@ import {
     Body,
     Controller,
     Get,
+    HttpStatus,
     Inject,
     Param,
     Patch,
     Post,
     Query,
+    Redirect,
     Res,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -32,6 +34,12 @@ export class AccountServiceController {
         return await lastValueFrom(response);
     }
 
+    @Get('/avatars/:img')
+    @Redirect()
+    async getAvatar(@Param('img') img: string) {
+        return { url: `${process.env.ACCOUNT_HOST}/avatars/${img}` };
+    }
+
     @Get()
     async getAccounts(@Query() queries: unknown, @Res() res: Response) {
         const response = this.rmq.send('account.user.all', queries);
@@ -41,7 +49,10 @@ export class AccountServiceController {
             count: number;
         }>(response);
 
-        return res.setHeader('X-Total-Count', count).status(200).json(users);
+        return res
+            .setHeader('X-Total-Count', count)
+            .status(HttpStatus.OK)
+            .json(users);
     }
 
     @Post()

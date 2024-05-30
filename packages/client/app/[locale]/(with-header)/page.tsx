@@ -1,5 +1,3 @@
-const Page = () => {
-    return <div>123</div>;
-};
+import { MainPage } from '@/app-pages/main';
 
-export default Page;
+export default MainPage;

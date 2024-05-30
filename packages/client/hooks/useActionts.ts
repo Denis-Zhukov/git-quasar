@@ -1,10 +1,12 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
 
-import { authActions } from '@/store/slices/auth';
+import { authActions, refresh } from '@/store/slices/auth';
 
 import { useAppDispatch } from './redux-toolkit';
+
 const actions = {
+    refresh,
     ...authActions,
 };
 

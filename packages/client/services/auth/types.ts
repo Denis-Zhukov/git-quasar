@@ -8,5 +8,6 @@ export interface ResponseData {
     user: {
         username: string;
         roles: string[];
+        avatar: string;
     };
 }

@@ -12,7 +12,8 @@ body {
     background: rgba(15, 18, 20, 0.8);
 }
 
-body{
+body {
     display: flex;
     flex-direction: column;
+    position: relative;
 }

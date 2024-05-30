@@ -2,7 +2,6 @@ import {
     BadRequestException,
     Body,
     Controller,
-    Get,
     HttpStatus,
     Inject,
     Post,
@@ -16,10 +15,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
-    constructor(
-        @Inject('ACCOUNT_SERVICE') private accountRmq: ClientProxy,
-        @Inject('NOTIFICATION_SERVICE') private notificationRmq: ClientProxy,
-    ) {}
+    constructor(@Inject('ACCOUNT_SERVICE') private accountRmq: ClientProxy) {}
 
     @Post('register')
     public async register(@Body() body: object) {
@@ -62,15 +58,29 @@ export class AuthController {
     }
 
     @Post('refresh')
-    public async refresh(@Body() body: object) {
+    public async refresh(@Req() req: Request) {
         try {
+            const refreshToken = req.cookies['refresh-token'];
             const response = this.accountRmq.send('account.auth.refresh', {
-                ...body,
+                refreshToken,
             });
 
             return await firstValueFrom(response);
         } catch (e) {
             throw new UnauthorizedException();
         }
+    }
+
+    @Post('logout')
+    public async logout(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const refreshToken = req.cookies['refresh-token'];
+        const response = this.accountRmq.send('account.auth.logout', {
+            refreshToken,
+        });
+        res.clearCookie('refresh-token');
+        return await firstValueFrom(response);
     }
 }

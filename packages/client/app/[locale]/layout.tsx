@@ -26,9 +26,11 @@ const RootLayout = async ({
     params: { locale },
 }: Readonly<{
     children: React.ReactNode;
-    params: { locale: string };
+    params: {
+        locale: string;
+    };
 }>) => {
-    const messages = await getMessages({ locale: 'ru' });
+    const messages = await getMessages();
 
     return (
         <html lang={locale}>

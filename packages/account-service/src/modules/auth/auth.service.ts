@@ -5,6 +5,7 @@ import { sign, verify } from 'jsonwebtoken';
 
 import { DatabaseService } from '../database/database.service';
 import { LoginDto } from './dto/login.dto';
+import { LogoutDto } from './dto/logout.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { JwtPayload } from './types';
 
@@ -57,6 +58,7 @@ export class AuthService {
             user: {
                 username: user.username,
                 roles: user.userRoles.map(({ role: { name } }) => name),
+                avatar: user.avatar,
             },
         };
     }
@@ -74,16 +76,27 @@ export class AuthService {
             },
         });
 
-        // eslint-disable-next-line
         if (!session) throw new RpcException("Session doesn't match");
 
+        const roles = session.user.userRoles.map(({ role: { name } }) => name);
         const payload: JwtPayload = {
             id,
-            roles: session.user.userRoles.map(({ role: { name } }) => name),
+            roles,
         };
 
         const accessToken = this.generateAccessToken(payload);
 
-        return { accessToken };
+        return {
+            accessToken,
+            user: {
+                username: session.user.username,
+                avatar: session.user.avatar,
+                roles,
+            },
+        };
+    }
+
+    async logout({ refreshToken }: LogoutDto) {
+        return this.db.session.deleteMany({ where: { refreshToken } });
     }
 }

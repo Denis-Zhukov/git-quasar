@@ -7,7 +7,9 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
 
+import { BACKEND_URL } from '@/constants/urls';
 import { RootState } from '@/store';
+import { refresh } from '@/store/slices/auth';
 import { getAccessToken } from '@/utils/local-storage-utils';
 
 const customBaseQuery: BaseQueryFn = async (
@@ -16,7 +18,7 @@ const customBaseQuery: BaseQueryFn = async (
     extraOptions,
 ) => {
     const query = fetchBaseQuery({
-        baseUrl: '',
+        baseUrl: BACKEND_URL,
         credentials: 'include',
         prepareHeaders: (headers) => {
             headers.set('Authorization', `Bearer ${getAccessToken()}`);
@@ -27,7 +29,7 @@ const customBaseQuery: BaseQueryFn = async (
     let result = await query(args, api, extraOptions);
 
     if (result.error?.status === 401) {
-        // await api.dispatch(refreshAuthThunk);
+        await api.dispatch(refresh);
         result = await query(args, api, extraOptions);
     }
 

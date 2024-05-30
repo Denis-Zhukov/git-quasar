@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import Avatar from 'avatar-builder';
 import { genSalt, hash } from 'bcrypt';
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
 
 import { Roles } from '../../constants/roles';
 import { DatabaseService } from '../database/database.service';
@@ -32,12 +35,21 @@ export class UserService {
             },
         });
 
+        const avatarBuilder = Avatar.squareBuilder(128);
+        const avatar = await avatarBuilder.create(username);
+
+        await writeFile(
+            join(process.cwd(), 'static', 'avatars', `${username}.png`),
+            avatar,
+        );
+
         const { id } = await this.db.user.create({
             data: {
                 email,
                 username,
                 passwordHash,
                 salt,
+                avatar: `${username}.png`,
                 confirmations: {
                     create: {},
                 },
