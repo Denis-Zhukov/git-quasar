@@ -17,6 +17,15 @@ import { lastValueFrom } from 'rxjs';
 export class AccountServiceController {
     constructor(@Inject('ACCOUNT_SERVICE') private rmq: ClientProxy) {}
 
+    @Get('/confirm/:id')
+    async confirmEmail(@Param() params: object) {
+        const response = this.rmq.send('account.user.confirm', {
+            ...params,
+            confirmed: true,
+        });
+        return await lastValueFrom(response);
+    }
+
     @Get(':id')
     async getAccount(@Param() params: unknown) {
         const response = this.rmq.send('account.user.one', params);

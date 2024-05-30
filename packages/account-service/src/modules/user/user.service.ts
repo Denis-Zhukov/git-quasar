@@ -32,12 +32,15 @@ export class UserService {
             },
         });
 
-        return await this.db.user.create({
+        const { id } = await this.db.user.create({
             data: {
                 email,
                 username,
                 passwordHash,
                 salt,
+                confirmations: {
+                    create: {},
+                },
                 userRoles: {
                     create: {
                         role: {
@@ -49,6 +52,12 @@ export class UserService {
                 },
             },
         });
+
+        const { id: idLink } = await this.db.confirmation.findFirst({
+            where: { userId: id },
+        });
+
+        return { idLink, username, email };
     }
 
     public async setBlock(id: string, blocked: boolean) {
@@ -66,9 +75,17 @@ export class UserService {
     }
 
     public async setConfirmed(id: string, confirmed: boolean) {
-        return this.db.user.update({
+        const { userId } = await this.db.confirmation.findFirst({
             where: { id },
+        });
+
+        await this.db.user.update({
+            where: { id: userId },
             data: { confirmed },
         });
+
+        if (confirmed) await this.db.confirmation.deleteMany({ where: { id } });
+
+        return id;
     }
 }
