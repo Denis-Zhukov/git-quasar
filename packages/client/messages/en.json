@@ -71,5 +71,17 @@
     },
     "private": "Private",
     "create": "Create"
+  },
+  "profile": {
+    "edit": "Edit",
+    "followers": "Followers",
+    "following": "Following",
+    "bio": "Bio",
+    "favorites": "Favorites",
+    "activity": "Activity",
+    "fill-out-bio": "The author of this page has not filled out information about himself"
+  },
+  "repositories": {
+    "title": "Repositories"
   }
 }

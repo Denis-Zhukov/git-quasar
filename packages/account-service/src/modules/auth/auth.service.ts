@@ -57,6 +57,7 @@ export class AuthService {
             accessToken,
             refreshToken,
             user: {
+                id: user.id,
                 username: user.username,
                 roles: user.userRoles.map(({ role: { name } }) => name),
                 avatar: user.avatar,
@@ -90,6 +91,7 @@ export class AuthService {
         return {
             accessToken,
             user: {
+                id,
                 username: session.user.username,
                 avatar: session.user.avatar,
                 roles,

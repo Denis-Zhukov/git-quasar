@@ -1,16 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import * as fs from 'fs';
-import fsp from 'fs/promises';
 import git from 'isomorphic-git';
 import * as path from 'path';
+import { firstValueFrom } from 'rxjs';
 
 import { DatabaseService } from '../database/database.service';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
+import { GetRepositoriesDto } from './dto/get-repositories.dto';
 
 @Injectable()
 export class RepositoryService {
-    constructor(private db: DatabaseService) {}
+    constructor(
+        private db: DatabaseService,
+        @Inject('ACCOUNT_SERVICE') private rmq: ClientProxy,
+    ) {}
 
     public async createRepository({
         userId,
@@ -41,5 +45,12 @@ export class RepositoryService {
         return this.db.repository.create({
             data: { userId, name: repoName, private: privateRepo },
         });
+    }
+
+    public async getRepositories({ name }: GetRepositoriesDto) {
+        const response = this.rmq.send('account.user.one.name', { name });
+        const user = await firstValueFrom(response);
+
+        return this.db.repository.findMany({ where: { userId: user.id } });
     }
 }

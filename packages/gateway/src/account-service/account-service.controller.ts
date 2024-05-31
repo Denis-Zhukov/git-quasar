@@ -4,6 +4,7 @@ import {
     Get,
     HttpStatus,
     Inject,
+    NotFoundException,
     Param,
     Patch,
     Post,
@@ -26,6 +27,16 @@ export class AccountServiceController {
             confirmed: true,
         });
         return await lastValueFrom(response);
+    }
+
+    @Get('/name/:name')
+    async getAccountByName(@Param() params: unknown) {
+        try {
+            const response = this.rmq.send('account.user.one.name', params);
+            return await lastValueFrom(response);
+        } catch (e) {
+            throw new NotFoundException();
+        }
     }
 
     @Get(':id')

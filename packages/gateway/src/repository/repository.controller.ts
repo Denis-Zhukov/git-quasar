@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Inject,
+    Param,
     Post,
     Res,
     UseGuards,
@@ -30,6 +31,12 @@ export class RepositoryController {
             userId: user.id,
             ...body,
         });
+        return firstValueFrom(response);
+    }
+
+    @Get('/name/:name')
+    async getRepositories(@Param() params: object) {
+        const response = this.rmq.send('repository.all.name', { ...params });
         return firstValueFrom(response);
     }
 }

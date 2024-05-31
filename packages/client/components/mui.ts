@@ -3,6 +3,7 @@
 export {
     Alert,
     Button,
+    Card,
     CircularProgress,
     Menu,
     MenuItem,
