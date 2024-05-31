@@ -5,6 +5,7 @@ import { createSliceWithThunks } from '@/utils/slice-thunk';
 
 export interface State {
     authorized: boolean;
+    id: string | null;
     username: string | null;
     roles: string[];
     avatar: string | null;
@@ -14,6 +15,7 @@ export interface State {
 
 const initialState: State = {
     authorized: false,
+    id: null,
     username: null,
     roles: [],
     avatar: null,
@@ -45,12 +47,13 @@ const authSlice = createSliceWithThunks({
                     state.username = null;
                     state.authorized = false;
                     state.avatar = null;
+                    state.id = null;
                 },
                 fulfilled: (
                     state,
                     {
                         payload: {
-                            user: { roles, username, avatar },
+                            user: { roles, username, avatar, id },
                             accessToken,
                         },
                     },
@@ -61,6 +64,7 @@ const authSlice = createSliceWithThunks({
                     state.username = username;
                     state.roles = roles;
                     state.avatar = avatar;
+                    state.id = id;
                 },
                 settled: (state) => {
                     state.isLoading = false;
@@ -83,12 +87,13 @@ const authSlice = createSliceWithThunks({
                     state.username = null;
                     state.authorized = false;
                     state.avatar = null;
+                    state.id = null;
                 },
                 fulfilled: (
                     state,
                     {
                         payload: {
-                            user: { roles, username, avatar },
+                            user: { roles, username, avatar, id },
                             accessToken,
                         },
                     },
@@ -99,6 +104,7 @@ const authSlice = createSliceWithThunks({
                     state.username = username;
                     state.roles = roles;
                     state.avatar = avatar;
+                    state.id = id;
                 },
             },
         ),

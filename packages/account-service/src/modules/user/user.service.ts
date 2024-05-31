@@ -25,6 +25,17 @@ export class UserService {
         return this.db.user.findUnique({ where: { id } });
     }
 
+    public async getUserByName(username: string) {
+        const user = await this.db.user.findFirst({ where: { username } });
+        const followers = await this.db.subscriber.count({
+            where: { userId: user.id },
+        });
+        const following = await this.db.subscriber.count({
+            where: { followerId: user.id },
+        });
+        return { ...user, followers, following };
+    }
+
     public async createUser({ username, email, password }: CreateUserData) {
         const salt = await genSalt();
         const passwordHash = await hash(password, salt);

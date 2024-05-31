@@ -25,7 +25,7 @@ import {
 
 export const Header = () => {
     const t = useTranslations('header');
-    const { authorized, username, roles, avatar } = useAppSelector(selectAuth);
+    const { authorized, username, avatar } = useAppSelector(selectAuth);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const locale = useLocale();
     const open = Boolean(anchorEl);
@@ -42,6 +42,10 @@ export const Header = () => {
         const parts = currentPath.split('/');
         parts[1] = e.target.value;
         router.push(parts.join('/'));
+    };
+
+    const handleRedirect = (url: string) => () => {
+        router.push(`/${locale}/${url}`);
     };
 
     const [logout] = useLogoutMutation();
@@ -109,7 +113,9 @@ export const Header = () => {
                                 horizontal: 'center',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>
+                            <MenuItem
+                                onClick={handleRedirect(`profile/${username}`)}
+                            >
                                 {t('profile')}
                             </MenuItem>
                             <MenuItem onClick={handleClose}>

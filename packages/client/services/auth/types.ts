@@ -6,6 +6,7 @@ export interface Payload {
 export interface ResponseData {
     accessToken: string;
     user: {
+        id: string;
         username: string;
         roles: string[];
         avatar: string;

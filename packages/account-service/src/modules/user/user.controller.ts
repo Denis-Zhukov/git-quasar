@@ -13,6 +13,7 @@ import {
     DeactivateUserDto,
     UserIdDto,
 } from './dto';
+import { UserNameDto } from './dto/user-name.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -35,6 +36,11 @@ export class UserController {
     @MessagePattern('account.user.one')
     public async get(@Payload() { id }: UserIdDto) {
         return this.service.getUserByID(id);
+    }
+
+    @MessagePattern('account.user.one.name')
+    public async getByName(@Payload() { name }: UserNameDto) {
+        return this.service.getUserByName(name);
     }
 
     @MessagePattern('account.user.create')
