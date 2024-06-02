@@ -10,7 +10,9 @@ export const ProfileRepositoriesPage = async ({
 }: {
     params: { name: string; locale: string };
 }) => {
-    const response = await fetch(URLS.getRepositoriesByName(name));
+    const response = await fetch(URLS.getRepositoriesByName(name), {
+        cache: 'no-store',
+    });
     const repositories = (await response.json()) as {
         id: string;
         name: string;

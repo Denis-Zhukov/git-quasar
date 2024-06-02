@@ -2,17 +2,23 @@
 
 import 'react-calendar-heatmap/dist/styles.css';
 
-import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import CalendarHeatmap from 'react-calendar-heatmap';
 
 import { Block } from './style';
 import type { RightBlockProps } from './types';
 
-export const RightBlock = ({ bio }: RightBlockProps) => {
+export const RightBlock = ({ bio, username }: RightBlockProps) => {
     const t = useTranslations('profile');
+    const locale = useLocale();
 
     return (
         <Block>
+            <Link href={`/${locale}/profile/${username}/repositories`}>
+                Repositories
+            </Link>
+
             <h2>{t('bio')}</h2>
             <p>{bio ?? t('fill-out-bio')}</p>
 

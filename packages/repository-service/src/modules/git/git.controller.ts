@@ -15,7 +15,7 @@ export class GitController {
     @Get('/:account/:repo/info/refs')
     async infoRefs(@Req() req: Request, @Res() res: Response) {
         const { service } = req.query;
-        const { account, repo } = req.params;
+        const { account } = req.params;
 
         if (service === 'git-upload-pack') return handle(req, res);
 
@@ -31,6 +31,6 @@ export class GitController {
         '/:account/:repo/git-upload-pack',
     ])
     async handle(@Req() req: Request, @Res() res: Response) {
-        handle(req, res);
+        return handle(req, res);
     }
 }

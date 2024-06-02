@@ -8,6 +8,7 @@ export {
     Menu,
     MenuItem,
     Select,
+    Skeleton,
     Switch,
     TextField,
     Tooltip,

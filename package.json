@@ -33,5 +33,10 @@
       "pnpm prettier --write",
       "pnpm eslint ./packages --fix"
     ]
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "simple-git": "^3.24.0",
+    "tmp-promise": "^3.0.3"
   }
 }
