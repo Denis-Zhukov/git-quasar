@@ -46,6 +46,7 @@ export const Header = () => {
 
     const handleRedirect = (url: string) => () => {
         router.push(`/${locale}/${url}`);
+        handleClose();
     };
 
     const [logout] = useLogoutMutation();

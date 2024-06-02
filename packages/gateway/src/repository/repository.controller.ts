@@ -5,6 +5,8 @@ import {
     Inject,
     Param,
     Post,
+    Query,
+    Redirect,
     Res,
     UseGuards,
 } from '@nestjs/common';
@@ -38,5 +40,42 @@ export class RepositoryController {
     async getRepositories(@Param() params: object) {
         const response = this.rmq.send('repository.all.name', { ...params });
         return firstValueFrom(response);
+    }
+
+    @Get('/download/:username/:repository')
+    @Redirect()
+    async downloadRepository(@Param() { username, repository }) {
+        const url = new URL(
+            `/repository/download/${username}/${repository}/`,
+            process.env.REPOSITORY_HOST,
+        );
+
+        return { url: url.toString() };
+    }
+
+    @Get('info/:username/:repository')
+    @Redirect()
+    async infoRefs(@Param() { username, repository }, @Query() quries) {
+        const url = new URL(
+            `/repository/info/${username}/${repository}`,
+            process.env.REPOSITORY_HOST,
+        );
+        Object.entries(quries).forEach(([key, value]: [string, string]) =>
+            url.searchParams.append(key, value),
+        );
+        return { url: url.toString() };
+    }
+
+    @Get('file/:username/:repository')
+    @Redirect()
+    async getFileData(@Param() { username, repository }, @Query() quries) {
+        const url = new URL(
+            `/repository/file/${username}/${repository}`,
+            process.env.REPOSITORY_HOST,
+        );
+        Object.entries(quries).forEach(([key, value]: [string, string]) =>
+            url.searchParams.append(key, value),
+        );
+        return { url: url.toString() };
     }
 }

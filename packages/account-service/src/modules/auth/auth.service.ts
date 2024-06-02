@@ -108,6 +108,7 @@ export class AuthService {
             accessToken,
             process.env.JWT_SECRET_ACCESS,
         ) as JwtPayload;
+
         const user = await this.db.user.findUnique({
             where: { id },
             include: { userRoles: { include: { role: true } } },

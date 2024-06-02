@@ -19,6 +19,7 @@ export const ProfilePage = async ({
         surname,
         followers,
         following,
+        bio,
     } = await response.json();
 
     return (
@@ -31,7 +32,7 @@ export const ProfilePage = async ({
                 followers={followers}
                 following={following}
             />
-            <RightBlock />
+            <RightBlock bio={bio} username={name} />
         </Main>
     );
 };
