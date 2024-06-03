@@ -11,6 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import simpleGit from 'simple-git';
 import * as tmp from 'tmp-promise';
 
+import { gitBlame } from '../../utils/git-utils';
 import { DatabaseService } from '../database/database.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
@@ -153,8 +154,6 @@ export class RepositoryService {
         const file = decodeURIComponent(filepath.replace(/^.\//, ''));
         const git = simpleGit(gitdir);
 
-        console.log(branch);
-        console.log(`${branch ?? repo.main_branch}:${file}`);
         const data = await git.show([`${branch ?? repo.main_branch}:${file}`]);
         return { file: data };
     }
