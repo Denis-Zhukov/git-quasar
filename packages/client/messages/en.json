@@ -53,6 +53,7 @@
     "about-us": "About Us",
     "pricing": "Pricing",
     "profile": "Profile",
+    "statistics": "Statistics",
     "settings": "Settings",
     "logout": "Logout",
     "sign-in": "Sign In",
@@ -116,6 +117,9 @@
     "create": "Create"
   },
   "issue": {
-    "send": "Отправить"
+    "send": "Send"
+  },
+  "admin-statistics": {
+    "count": "Count"
   }
 }

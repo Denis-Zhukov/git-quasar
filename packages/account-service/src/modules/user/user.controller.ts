@@ -1,6 +1,7 @@
 import {
     Controller,
     DefaultValuePipe,
+    Get,
     Inject,
     ParseIntPipe,
 } from '@nestjs/common';
@@ -78,5 +79,10 @@ export class UserController {
     @MessagePattern('account.user.update')
     public async uploadAvatar(@Payload() dto: UpdateUserDto) {
         return await this.service.updateProfile(dto);
+    }
+
+    @Get('/statistics')
+    public async getStatistics() {
+        return await this.service.getStatistics();
     }
 }

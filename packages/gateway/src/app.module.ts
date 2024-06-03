@@ -7,6 +7,7 @@ import { GitModule } from './git/git.module';
 import { IssuesModule } from './issues/issues.module';
 import { ProfileModule } from './profile/profile.module';
 import { RepositoryModule } from './repository/repository.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { RepositoryModule } from './repository/repository.module';
         RepositoryModule,
         ProfileModule,
         IssuesModule,
+        StatisticsModule,
     ],
     controllers: [],
     providers: [],

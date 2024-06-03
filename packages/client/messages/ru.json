@@ -54,6 +54,7 @@
     "about-us": "О нас",
     "pricing": "Цены",
     "profile": "Профиль",
+    "statistics": "Статистика",
     "settings": "Настройки",
     "logout": "Выйти",
     "sign-in": "Войти",
@@ -117,6 +118,9 @@
     "create": "Задать вопрос"
   },
   "issue": {
-    "send": "Send"
+    "send": "Отправить"
+  },
+  "admin-statistics": {
+    "count": "Количество"
   }
 }

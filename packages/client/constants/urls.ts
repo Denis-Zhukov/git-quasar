@@ -46,4 +46,5 @@ export const URLS = {
         `${BACKEND_URL}/account/${username}/toggle-block-status`,
     generateToggleDeactivated: (username: string) =>
         `${BACKEND_URL}/account/${username}/toggle-deactivate-status`,
+    accountStatistics: `${BACKEND_URL}/statistics/create-account`,
 } as const;

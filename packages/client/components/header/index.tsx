@@ -25,7 +25,7 @@ import {
 
 export const Header = () => {
     const t = useTranslations('header');
-    const { authorized, username, avatar } = useAppSelector(selectAuth);
+    const { authorized, username, avatar, roles } = useAppSelector(selectAuth);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const locale = useLocale();
     const open = Boolean(anchorEl);
@@ -126,6 +126,14 @@ export const Header = () => {
                             >
                                 {t('my-repos')}
                             </MenuItem>
+                            {roles.includes('admin') && (
+                                <MenuItem
+                                    onClick={handleRedirect('/statistics')}
+                                >
+                                    {' '}
+                                    {t('statistics')}
+                                </MenuItem>
+                            )}
                             <MenuItem
                                 onClick={handleRedirect(
                                     `profile/${username}/settings`,

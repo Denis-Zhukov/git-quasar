@@ -165,4 +165,26 @@ export class UserService {
 
         return { status: HttpStatus.CREATED, message: 'done' };
     }
+
+    public async getStatistics() {
+        const result: { month: string; user_count: number }[] = await this.db
+            .$queryRaw`
+            SELECT
+                EXTRACT(MONTH FROM "created_at") AS month,
+                COUNT(*) AS user_count
+            FROM
+                "users"
+            WHERE
+                EXTRACT(YEAR FROM "created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
+            GROUP BY
+                month
+            ORDER BY
+                month;
+        `;
+
+        return result.map(({ user_count, ...rest }) => ({
+            ...rest,
+            count: Number.parseInt(`${user_count}`),
+        }));
+    }
 }

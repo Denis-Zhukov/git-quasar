@@ -20,6 +20,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalFilters(new ValidationExceptionFilter());
 
+    app.enableCors({ origin: true, credentials: true });
     await app.startAllMicroservices();
     await app.listen(3001);
 }
