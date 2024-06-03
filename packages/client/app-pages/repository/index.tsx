@@ -1,8 +1,11 @@
 'use client';
 
+import Favorite from '@mui/icons-material/Bookmark';
+import Unfavorite from '@mui/icons-material/BookmarkBorder';
+import { SelectChangeEvent } from '@mui/material';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { FileObserver } from '@/components/file-observer';
 import { FileTree } from '@/components/file-tree';
@@ -14,10 +17,12 @@ import {
     TextField,
 } from '@/components/mui';
 import { URLS } from '@/constants/urls';
+import { useAppSelector } from '@/hooks/redux-toolkit';
 import {
     useGetInfoQuery,
     useLazyGetFileQuery,
 } from '@/store/quries/repositories';
+import { selectAuth } from '@/store/slices/auth/selectors';
 
 import { Block, Explorer, GetRepository, HeaderRepository } from './style';
 
@@ -27,6 +32,7 @@ export const RepositoryPage = ({
     params: { username: string; repository: string };
 }) => {
     const locale = useLocale();
+    const { username: currentUsername } = useAppSelector(selectAuth);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,23 +48,48 @@ export const RepositoryPage = ({
         inputLinkRepoRef.current?.select();
     };
 
-    const { data, isLoading } = useGetInfoQuery({ username, repository });
+    const firstRef = useRef<boolean>(true);
+    const [branch, setBranch] = useState('');
+    const { data, isLoading } = useGetInfoQuery({
+        username,
+        repository,
+        branch,
+    });
     const [getFile, { data: file }] = useLazyGetFileQuery();
     const handleClickFile = (filepath: string) => () => {
-        getFile({ username, repository, filepath });
+        getFile({ username, repository, filepath, branch });
+    };
+
+    useEffect(() => {
+        if (data && firstRef.current) {
+            setBranch(data.mainBranch);
+            firstRef.current = false;
+        }
+    }, [data]);
+
+    const handleChangeBranch = (e: SelectChangeEvent) => {
+        setBranch(e.target.value);
     };
 
     return (
         <Block>
             <HeaderRepository>
-                {data && (
-                    <Select value={data.mainBranch}>
-                        {data.branches.map((branch) => (
-                            <MenuItem key={branch} value={branch}>
-                                {branch}
-                            </MenuItem>
-                        ))}
-                    </Select>
+                <Select value={branch} onChange={handleChangeBranch}>
+                    {data?.branches.map((branch) => (
+                        <MenuItem
+                            key={branch}
+                            value={branch}
+                            selected={branch === 'main'}
+                        >
+                            {branch}
+                        </MenuItem>
+                    ))}
+                </Select>
+
+                {username === currentUsername && (
+                    <Button>
+                        <Unfavorite />
+                    </Button>
                 )}
 
                 <Link

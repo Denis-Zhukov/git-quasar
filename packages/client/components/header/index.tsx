@@ -121,6 +121,13 @@ export const Header = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={handleRedirect(
+                                    `profile/${username}/repositories`,
+                                )}
+                            >
+                                {t('my-repos')}
+                            </MenuItem>
+                            <MenuItem
+                                onClick={handleRedirect(
                                     `profile/${username}/settings`,
                                 )}
                             >

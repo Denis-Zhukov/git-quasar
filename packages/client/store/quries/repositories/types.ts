@@ -6,6 +6,7 @@ export interface CreateRepositoryData {
 export interface GetRepositoryData {
     username: string;
     repository: string;
+    branch: string;
 }
 
 export interface GetRepositoryResponse {
@@ -18,8 +19,18 @@ export interface GetFileData {
     username: string;
     repository: string;
     filepath: string;
+    branch: string;
 }
 
 export interface GetFileResponse {
-    file: string
+    file: string;
 }
+
+export type GetRepositoriesResponse = {
+    createdAt: string;
+    id: string;
+    main_branch: string;
+    name: string;
+    private: boolean;
+    userId: string;
+}[];

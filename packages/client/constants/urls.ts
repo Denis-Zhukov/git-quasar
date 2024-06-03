@@ -6,14 +6,21 @@ export const URLS = {
     refresh: `${BACKEND_URL}/auth/refresh`,
     logout: `${BACKEND_URL}/auth/logout`,
     createRepository: `${BACKEND_URL}/repository/create`,
-    generateGetInfoRepository: (username: string, repository: string) =>
-        `${BACKEND_URL}/repository/info/${username}/${repository}`,
+    generateGetInfoRepository: (
+        username: string,
+        repository: string,
+        branch: string,
+    ) =>
+        `${BACKEND_URL}/repository/info/${username}/${repository}?branch=${branch}`,
     generateGetFileRepository: (
         username: string,
         repository: string,
         filepath: string,
+        branch: string,
     ) =>
-        `${BACKEND_URL}/repository/file/${username}/${repository}?filepath=${filepath}`,
+        `${BACKEND_URL}/repository/file/${username}/${repository}?filepath=${filepath}&branch=${branch}`,
+    generateGetRepositories: (username: string) =>
+        `${BACKEND_URL}/repository/name/${username}`,
     getAccountByName: (username: string) =>
         `${BACKEND_URL}/account/name/${username}`,
     getRepositoriesByName: (username: string) =>

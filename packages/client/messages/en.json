@@ -57,7 +57,8 @@
     "sign-up": "Sign Up",
     "russian": "Russian",
     "english": "English",
-    "create-repo": "Create repository"
+    "create-repo": "Create repository",
+    "my-repos": "My repositories"
   },
   "main": {
     "title": "GitQuasar"
@@ -92,6 +93,7 @@
     "profile": "Profile",
     "notifications": "Notifications",
     "account": "Account",
+    "repos": "Repositories",
     "profile-tab": {
       "success": "Profile is updated",
       "username": "Username",

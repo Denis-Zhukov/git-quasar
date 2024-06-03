@@ -82,7 +82,7 @@ export class RepositoryService {
         //tempDir.cleanup();
     }
 
-    public async infoRepo(username: string, repoName: string) {
+    public async infoRepo(username: string, repoName: string, branch: string) {
         const userId = await this.getUserId(username);
 
         const gitdir = path.join(
@@ -108,7 +108,7 @@ export class RepositoryService {
         const files = await git.listFiles({
             fs,
             gitdir,
-            ref: repo.main_branch,
+            ref: branch ?? repo.main_branch,
         });
 
         return { files, branches, mainBranch: repo.main_branch };
@@ -118,6 +118,7 @@ export class RepositoryService {
         username: string,
         repoName: string,
         filepath: string,
+        branch: string,
     ) {
         const userId = await this.getUserId(username);
 
@@ -134,7 +135,10 @@ export class RepositoryService {
 
         const file = decodeURIComponent(filepath.replace(/^.\//, ''));
         const git = simpleGit(gitdir);
-        const data = await git.show([`${repo.main_branch}:${file}`]);
+
+        console.log(branch);
+        console.log(`${branch ?? repo.main_branch}:${file}`);
+        const data = await git.show([`${branch ?? repo.main_branch}:${file}`]);
         return { file: data };
     }
 

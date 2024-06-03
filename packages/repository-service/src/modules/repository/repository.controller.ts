@@ -24,8 +24,9 @@ export class RepositoryController {
     async getRepositoryInfo(
         @Param()
             { username, repository }: { username: string; repository: string },
+        @Query('branch') branch: string,
     ) {
-        return await this.service.infoRepo(username, repository);
+        return await this.service.infoRepo(username, repository, branch);
     }
 
     @Get('/file/:username/:repository')
@@ -33,8 +34,9 @@ export class RepositoryController {
         @Param()
             { username, repository }: { username: string; repository: string },
         @Query('filepath') path: string,
+        @Query('branch') branch: string,
     ) {
-        return await this.service.infoFile(username, repository, path);
+        return await this.service.infoFile(username, repository, path, branch);
     }
 
     @MessagePattern('repository.create')
@@ -62,12 +64,16 @@ export class RepositoryController {
 
     @Get('/issue/:issue')
     async getIssue(@Param('issue') issue: string) {
-        console.log(issue);
         return await this.service.getIssue(issue);
     }
 
     @MessagePattern('repository.issue.message')
     async messageIssue(@Payload() dto: MessageIssueDto) {
         return await this.service.messageIssue(dto);
+    }
+
+    @MessagePattern('repository.favorite')
+    async favoriteRepository(@Payload() dto: CreateIssueDto) {
+        return await this.service.createIssue(dto);
     }
 }

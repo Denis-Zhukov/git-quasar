@@ -3,7 +3,9 @@ import { URLS } from '@/constants/urls';
 import { api } from '../api';
 import {
     CreateRepositoryData,
-    GetFileData, GetFileResponse,
+    GetFileData,
+    GetFileResponse,
+    GetRepositoriesResponse,
     GetRepositoryData,
     GetRepositoryResponse,
 } from './types';
@@ -18,23 +20,41 @@ const repositoriesApi = api.injectEndpoints({
             }),
         }),
         getInfo: build.query<GetRepositoryResponse, GetRepositoryData>({
-            query: ({ username, repository }) => ({
-                url: URLS.generateGetInfoRepository(username, repository),
+            query: ({ username, repository, branch }) => ({
+                url: URLS.generateGetInfoRepository(
+                    username,
+                    repository,
+                    branch,
+                ),
                 method: 'GET',
             }),
         }),
         getFile: build.query<GetFileResponse, GetFileData>({
-            query: ({ username, repository, filepath }) => ({
+            query: ({ username, repository, filepath, branch }) => ({
                 url: URLS.generateGetFileRepository(
                     username,
                     repository,
                     filepath,
+                    branch,
                 ),
+                method: 'GET',
+            }),
+        }),
+        getRepositories: build.query<
+            GetRepositoriesResponse,
+            { username: string }
+        >({
+            query: ({ username }) => ({
+                url: URLS.generateGetRepositories(username),
                 method: 'GET',
             }),
         }),
     }),
 });
 
-export const { useCreateMutation, useGetInfoQuery, useLazyGetFileQuery } =
-    repositoriesApi;
+export const {
+    useCreateMutation,
+    useGetInfoQuery,
+    useLazyGetFileQuery,
+    useGetRepositoriesQuery,
+} = repositoriesApi;
