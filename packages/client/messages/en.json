@@ -85,11 +85,31 @@
     "title": "Repositories"
   },
   "repository": {
-    "get-repo": "Get repository"
+    "get-repo": "Get repository",
+    "download": "Download"
   },
   "profile-settings": {
     "profile": "Profile",
     "notifications": "Notifications",
-    "account": "Account"
+    "account": "Account",
+    "profile-tab": {
+      "success": "Profile is updated",
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "bio": "Bio",
+      "update": "Update"
+    }
+  },
+  "issues": {
+    "create": "Create Issue"
+  },
+  "create-issue": {
+    "title": "Title",
+    "question": "Question",
+    "create": "Create"
+  },
+  "issue": {
+    "send": "Отправить"
   }
 }

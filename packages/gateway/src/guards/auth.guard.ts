@@ -23,18 +23,23 @@ export class RolesGuard implements CanActivate {
             ROLES_KEY,
             [context.getHandler(), context.getClass()],
         );
-        if (!requiredRoles) {
-            return true;
-        }
 
         const req = context.switchToHttp().getRequest() as Request;
         const res = context.switchToHttp().getResponse() as Response;
-        const accessToken = req.header('Authorization').split(' ')?.[1];
+        const accessToken = req.header('Authorization')?.split(' ')?.[1];
 
         const response = this.rmq.send('account.auth.check', { accessToken });
         const { id, roles }: { id: string; roles: string } =
             await firstValueFrom(response);
         res.locals = { user: { id, roles } };
+
+        if (!id) {
+            return false;
+        }
+
+        if (!requiredRoles.length) {
+            return true;
+        }
 
         return requiredRoles.some((role) => roles?.includes(role));
     }

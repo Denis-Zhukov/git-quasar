@@ -1,4 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const Wrapper = styled.div`
+    ${({ theme }) => css`
+        color: ${theme.color.primary};
+    `}
+`;
 
 export const FileItem = styled.li`
     display: flex;

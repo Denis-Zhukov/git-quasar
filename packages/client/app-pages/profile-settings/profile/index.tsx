@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
@@ -16,6 +17,7 @@ import { useUpdateProfileMutation } from '@/store/quries/profile';
 import { Dropzone, DropzoneAndPreview, Form } from './style';
 
 export const Profile = ({ username }: ProfileProps) => {
+    const t = useTranslations('profile-settings.profile-tab');
     const { register, setValue, watch, handleSubmit } = useForm<ProfileForm>({
         defaultValues: {
             avatar: null,
@@ -45,7 +47,7 @@ export const Profile = ({ username }: ProfileProps) => {
 
     const [update, { isSuccess, isLoading }] = useUpdateProfileMutation();
 
-    useSuccess('Данные обновлены', isSuccess);
+    useSuccess(t('success'), isSuccess);
 
     const { setUsername } = useActions();
 
@@ -69,18 +71,18 @@ export const Profile = ({ username }: ProfileProps) => {
                 <img ref={previewRef} alt="preview avatar" />
             </DropzoneAndPreview>
 
-            <TextField {...register('username')} label="Username" />
-            <TextField {...register('name')} label="Name" />
-            <TextField {...register('surname')} label="Surname" />
+            <TextField {...register('username')} label={t('username')} />
+            <TextField {...register('name')} label={t('name')} />
+            <TextField {...register('surname')} label={t('surname')} />
             <TextField
                 {...register('bio')}
-                label="Bio"
+                label={t('bio')}
                 minRows={10}
                 maxRows={10}
                 multiline
             />
             <Button type="submit" disabled={isLoading}>
-                Сохранить
+                {t('update')}
             </Button>
         </Form>
     );

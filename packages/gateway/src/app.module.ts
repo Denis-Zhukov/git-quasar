@@ -4,6 +4,7 @@ import { AccountServiceModule } from './account-service/account-service.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { GitModule } from './git/git.module';
+import { IssuesModule } from './issues/issues.module';
 import { ProfileModule } from './profile/profile.module';
 import { RepositoryModule } from './repository/repository.module';
 
@@ -15,6 +16,7 @@ import { RepositoryModule } from './repository/repository.module';
         GitModule,
         RepositoryModule,
         ProfileModule,
+        IssuesModule,
     ],
     controllers: [],
     providers: [],

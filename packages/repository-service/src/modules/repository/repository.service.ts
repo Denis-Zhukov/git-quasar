@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
-import git, { branch } from 'isomorphic-git';
+import git from 'isomorphic-git';
 import * as JSZip from 'jszip';
 import * as path from 'path';
 import * as process from 'process';
@@ -12,8 +12,10 @@ import simpleGit from 'simple-git';
 import * as tmp from 'tmp-promise';
 
 import { DatabaseService } from '../database/database.service';
+import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
+import { MessageIssueDto } from './dto/message-issue.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -165,5 +167,71 @@ export class RepositoryService {
         const userId = await this.getUserId(name);
 
         return this.db.repository.findMany({ where: { userId } });
+    }
+
+    public async createIssue({
+        userIdCreator,
+        title,
+        usernameOwner,
+        question,
+        repository,
+    }: CreateIssueDto) {
+        const userIdOwner = await this.getUserId(usernameOwner);
+        const repo = await this.db.repository.findFirst({
+            where: { userId: userIdOwner, name: repository },
+        });
+        if (!repo) return { status: HttpStatus.NOT_FOUND, message: 'no-repo' };
+
+        const issue = await this.db.issue.create({
+            data: {
+                repositoryId: repo.id,
+                title,
+                qustion: question,
+            },
+        });
+
+        await this.db.issueMessage.create({
+            data: {
+                userId: userIdCreator,
+                issueId: issue.id,
+                text: question,
+                dislikes: 0,
+                likes: 0,
+            },
+        });
+
+        return { status: HttpStatus.CREATED, message: 'done' };
+    }
+
+    public async getIssues(username: string, repository: string) {
+        const userId = await this.getUserId(username);
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+        });
+
+        const issues = await this.db.issue.findMany({
+            where: { repositoryId: repo.id },
+        });
+
+        return issues;
+    }
+
+    public async getIssue(issue: string) {
+        return await this.db.issue.findUnique({
+            where: { id: issue },
+            include: { IssueMessage: true },
+        });
+    }
+
+    public async messageIssue({ message, issueId, userId }: MessageIssueDto) {
+        return this.db.issueMessage.create({
+            data: {
+                text: message,
+                userId,
+                issueId,
+                likes: 0,
+                dislikes: 0,
+            },
+        });
     }
 }

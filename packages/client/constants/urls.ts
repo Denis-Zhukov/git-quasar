@@ -25,4 +25,10 @@ export const URLS = {
         `${BACKEND_URL}/repository/download/${username}/${repository}`,
     generateUpdateProfile: (username: string) =>
         `${BACKEND_URL}/profile/update/${username}`,
+    generateCreateIssue: (username: string, repository: string) =>
+        `${BACKEND_URL}/issues/create/${username}/${repository}`,
+    generateGetIssues: (username: string, repository: string) =>
+        `${BACKEND_URL}/issues/${username}/${repository}`,
+    generateGetIssue: (issue: string) => `${BACKEND_URL}/issues/${issue}`,
+    messageIssue: `${BACKEND_URL}/issues/message`,
 } as const;

@@ -3,9 +3,9 @@
 import FolderIcon from '@mui/icons-material/Folder';
 import { useMemo, useState } from 'react';
 
-import { FileItem } from '@/components/file-tree/style';
 import { getFilesOnCurrentLevel } from '@/utils/get-files-on-current-level';
 
+import { FileItem, Wrapper } from './style';
 import { FileTreeProps } from './types';
 
 export const FileTree = ({ files, onClickFile }: FileTreeProps) => {
@@ -35,9 +35,11 @@ export const FileTree = ({ files, onClickFile }: FileTreeProps) => {
     };
 
     return (
-        <div style={{ color: 'white' }}>
+        <Wrapper>
             <ul>
-                {currentDir !== '.' && <li onClick={handleExit}>..</li>}
+                {currentDir !== '.' && (
+                    <FileItem onClick={handleExit}>..</FileItem>
+                )}
                 {items.map(({ name, type }) => (
                     <FileItem
                         onClick={
@@ -51,6 +53,6 @@ export const FileTree = ({ files, onClickFile }: FileTreeProps) => {
                     </FileItem>
                 ))}
             </ul>
-        </div>
+        </Wrapper>
     );
 };

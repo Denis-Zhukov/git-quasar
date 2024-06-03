@@ -85,11 +85,31 @@
     "title": "Репозитории"
   },
   "repository": {
-    "get-repo": "Получить репозиторий"
+    "get-repo": "Получить репозиторий",
+    "download": "Скачать"
   },
   "profile-settings": {
     "profile": "Профиль",
     "notifications": "Оповещения",
-    "account": "Аккаунт"
+    "account": "Аккаунт",
+    "profile-tab": {
+      "success": "Данные обновлены",
+      "username": "Имя пользователя",
+      "name": "Имя",
+      "surname": "Фамилия",
+      "bio": "Краткая информация",
+      "update": "Обновить"
+    }
+  },
+  "issues": {
+    "create": "Создать обсуждение"
+  },
+  "create-issue": {
+    "title": "Заголовок",
+    "question": "Вопрос",
+    "create": "Задать вопрос"
+  },
+  "issue": {
+    "send": "Send"
   }
 }

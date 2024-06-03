@@ -43,7 +43,7 @@ const isHydrateAction = (
 };
 
 export const api = createApi({
-    tagTypes: [],
+    tagTypes: ['messages'],
     reducerPath: 'api',
     baseQuery: customBaseQuery,
     extractRehydrationInfo(action, { reducerPath }): any {
