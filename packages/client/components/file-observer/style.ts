@@ -8,7 +8,7 @@ export const Content = styled.code`
         white-space: pre-wrap;
         overflow-y: scroll;
         color: ${theme.color.primary};
-        padding: ${theme.gap.l}px;
+        padding: 0 ${theme.gap.l}px;
     `}
 
     &::-webkit-scrollbar {

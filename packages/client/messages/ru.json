@@ -83,5 +83,13 @@
   },
   "repositories": {
     "title": "Репозитории"
+  },
+  "repository": {
+    "get-repo": "Получить репозиторий"
+  },
+  "profile-settings": {
+    "profile": "Профиль",
+    "notifications": "Оповещения",
+    "account": "Аккаунт"
   }
 }

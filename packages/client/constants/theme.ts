@@ -2,6 +2,7 @@ export const theme = {
     color: {
         accent: '#5a5ade',
         primary: '#FFFFFF',
+        success: '#2db73e',
         mainBg: 'rgba(15, 18, 20, 0.8)',
     },
     gap: {

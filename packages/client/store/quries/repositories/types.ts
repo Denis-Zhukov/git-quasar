@@ -11,10 +11,15 @@ export interface GetRepositoryData {
 export interface GetRepositoryResponse {
     files: string[];
     branches: string[];
+    mainBranch: string;
 }
 
 export interface GetFileData {
     username: string;
     repository: string;
     filepath: string;
+}
+
+export interface GetFileResponse {
+    file: string
 }

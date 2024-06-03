@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import { Menu } from '@/components/mui';
 
 export const Block = styled.main`
-    width: 1440px;
+    width: 100%;
+    max-width: 1440px;
     margin: 80px auto 0;
 `;
 

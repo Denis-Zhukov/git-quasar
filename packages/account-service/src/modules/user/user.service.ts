@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import Avatar from 'avatar-builder';
 import { genSalt, hash } from 'bcrypt';
 import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import * as path from 'path';
 
 import { Roles } from '../../constants/roles';
 import { DatabaseService } from '../database/database.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserData } from './types';
 
 @Injectable()
@@ -26,7 +27,7 @@ export class UserService {
     }
 
     public async getUserByName(username: string) {
-        const user = await this.db.user.findFirst({ where: { username } });
+        const user = await this.db.user.findUnique({ where: { username } });
         const followers = await this.db.subscriber.count({
             where: { userId: user.id },
         });
@@ -46,21 +47,15 @@ export class UserService {
             },
         });
 
-        const avatarBuilder = Avatar.squareBuilder(128);
+        const avatarBuilder = Avatar.squareBuilder(256);
         const avatar = await avatarBuilder.create(username);
-
-        await writeFile(
-            join(process.cwd(), 'static', 'avatars', `${username}.png`),
-            avatar,
-        );
 
         const { id } = await this.db.user.create({
             data: {
                 email,
-                username,
+                username: username.toLowerCase(),
                 passwordHash,
                 salt,
-                avatar: `${username}.png`,
                 confirmations: {
                     create: {},
                 },
@@ -74,6 +69,16 @@ export class UserService {
                     },
                 },
             },
+        });
+
+        await writeFile(
+            path.join(process.cwd(), 'static', 'avatars', `${id}.png`),
+            avatar,
+        );
+
+        await this.db.user.update({
+            where: { id },
+            data: { avatar: `${id}.png` },
         });
 
         const { id: idLink } = await this.db.confirmation.findFirst({
@@ -110,5 +115,53 @@ export class UserService {
         if (confirmed) await this.db.confirmation.deleteMany({ where: { id } });
 
         return id;
+    }
+
+    public async updateProfile({
+        currentUsername,
+        username,
+        surname,
+        avatar,
+        name,
+        bio,
+    }: UpdateUserDto) {
+        const user = await this.db.user.findUnique({
+            where: { username: currentUsername },
+        });
+        if (!user)
+            return { status: HttpStatus.BAD_REQUEST, message: 'no-user' };
+
+        const newUsernameUser = await this.db.user.findUnique({
+            where: { username },
+        });
+        if (username !== currentUsername && newUsernameUser)
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'already-exists',
+            };
+
+        const avatarFile = avatar
+            ? `${user.id}${path.extname(avatar.originalname)}`
+            : undefined;
+
+        await this.db.user.update({
+            where: { id: user.id },
+            data: {
+                username: username.toLowerCase(),
+                avatar: avatarFile,
+                name,
+                surname,
+                bio,
+            },
+        });
+
+        if (avatarFile) {
+            await writeFile(
+                path.join(process.cwd(), 'static', 'avatars', avatarFile),
+                Buffer.from(avatar.buffer),
+            );
+        }
+
+        return { status: HttpStatus.CREATED, message: 'done' };
     }
 }

@@ -1,5 +1,6 @@
 'use client';
 
+export { TabContext, TabList, TabPanel } from '@mui/lab';
 export {
     Alert,
     Button,
@@ -10,6 +11,8 @@ export {
     Select,
     Skeleton,
     Switch,
+    Tab,
+    Tabs,
     TextField,
     Tooltip,
 } from '@mui/material';

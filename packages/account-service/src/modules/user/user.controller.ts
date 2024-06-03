@@ -13,6 +13,7 @@ import {
     DeactivateUserDto,
     UserIdDto,
 } from './dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserNameDto } from './dto/user-name.dto';
 import { UserService } from './user.service';
 
@@ -70,5 +71,10 @@ export class UserController {
     @MessagePattern('account.user.confirm')
     public async active(@Payload() { id, confirmed }: ConfirmAccountDto) {
         return this.service.setConfirmed(id, confirmed);
+    }
+
+    @MessagePattern('account.user.update')
+    public async uploadAvatar(@Payload() dto: UpdateUserDto) {
+        return await this.service.updateProfile(dto);
     }
 }

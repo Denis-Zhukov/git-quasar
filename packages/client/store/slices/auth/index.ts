@@ -114,6 +114,11 @@ const authSlice = createSliceWithThunks({
             state.roles = [];
             state.avatar = null;
         }),
+        setUsername: create.reducer(
+            (state, { payload }: { payload: string }) => {
+                state.username = payload;
+            },
+        ),
     }),
 });
 

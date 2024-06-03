@@ -8,7 +8,8 @@ export const Block = styled.main`
     ${({ theme }) => css`
         display: flex;
         flex-direction: column;
-        width: 1440px;
+        width: 100%;
+        max-width: 1440px;
         margin: 80px auto 0;
         gap: ${theme.gap.m}px;
         color: ${theme.color.primary};

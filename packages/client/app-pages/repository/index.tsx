@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import React, { useRef } from 'react';
 
 import { Block, Explorer, GetRepository } from '@/app-pages/repository/style';
@@ -31,6 +32,7 @@ export const RepositoryPage = ({
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const t = useTranslations('repository');
 
     const inputLinkRepoRef = useRef<HTMLInputElement | null>(null);
     const handleSelect = () => {
@@ -45,34 +47,15 @@ export const RepositoryPage = ({
 
     return (
         <Block>
-            <Select>
-                {data?.branches.map((branch) => (
-                    <MenuItem key={branch}>{branch}</MenuItem>
-                ))}
-            </Select>
-
-            <Button
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-            >
-                Get repository
-            </Button>
-
-            <Explorer>
-                {isLoading ? (
-                    <Skeleton variant="rectangular" width={500} height={400} />
-                ) : (
-                    <FileTree
-                        onClickFile={handleClickFile}
-                        files={data?.files ?? []}
-                    />
-                )}
-                <FileObserver content={file?.file ?? 'rendering'} />
-            </Explorer>
-
+            {data && (
+                <Select value={data.mainBranch} fullWidth>
+                    {data.branches.map((branch) => (
+                        <MenuItem key={branch} value={branch}>
+                            {branch}
+                        </MenuItem>
+                    ))}
+                </Select>
+            )}
             <GetRepository
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -97,6 +80,28 @@ export const RepositoryPage = ({
                     DOWNLOAD
                 </a>
             </GetRepository>
+
+            <Button
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+            >
+                {t('get-repo')}
+            </Button>
+
+            <Explorer>
+                {isLoading ? (
+                    <Skeleton variant="rectangular" width={500} height={400} />
+                ) : (
+                    <FileTree
+                        onClickFile={handleClickFile}
+                        files={data?.files ?? []}
+                    />
+                )}
+                <FileObserver content={file?.file ?? 'rendering'} />
+            </Explorer>
         </Block>
     );
 };

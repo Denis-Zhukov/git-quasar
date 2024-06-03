@@ -119,7 +119,11 @@ export const Header = () => {
                             >
                                 {t('profile')}
                             </MenuItem>
-                            <MenuItem onClick={handleClose}>
+                            <MenuItem
+                                onClick={handleRedirect(
+                                    `profile/${username}/settings`,
+                                )}
+                            >
                                 {t('settings')}
                             </MenuItem>
                             <MenuItem onClick={handleLogout}>

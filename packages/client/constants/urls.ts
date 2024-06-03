@@ -23,4 +23,6 @@ export const URLS = {
         `${BACKEND_URL}/git/${username}/${repository}`,
     getDownloadRepoUrl: (username: string, repository: string) =>
         `${BACKEND_URL}/repository/download/${username}/${repository}`,
+    generateUpdateProfile: (username: string) =>
+        `${BACKEND_URL}/profile/update/${username}`,
 } as const;

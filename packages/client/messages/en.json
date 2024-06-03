@@ -83,5 +83,13 @@
   },
   "repositories": {
     "title": "Repositories"
+  },
+  "repository": {
+    "get-repo": "Get repository"
+  },
+  "profile-settings": {
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "account": "Account"
   }
 }

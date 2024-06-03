@@ -8,3 +8,9 @@ export const useError = (text: string, error: unknown[]) => {
         if (error) toast(text, { type: 'error', theme: 'dark' });
     }, [error]);
 };
+
+export const useSuccess = (text: string, isSuccess: boolean) => {
+    useEffect(() => {
+        if (isSuccess) toast(text, { type: 'success', theme: 'dark' });
+    }, [isSuccess]);
+};

@@ -3,7 +3,7 @@ import { URLS } from '@/constants/urls';
 import { api } from '../api';
 import {
     CreateRepositoryData,
-    GetFileData,
+    GetFileData, GetFileResponse,
     GetRepositoryData,
     GetRepositoryResponse,
 } from './types';
@@ -23,7 +23,7 @@ const repositoriesApi = api.injectEndpoints({
                 method: 'GET',
             }),
         }),
-        getFile: build.query<unknown, GetFileData>({
+        getFile: build.query<GetFileResponse, GetFileData>({
             query: ({ username, repository, filepath }) => ({
                 url: URLS.generateGetFileRepository(
                     username,
