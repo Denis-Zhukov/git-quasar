@@ -48,8 +48,9 @@ export class AuthController {
                 ipAddress,
             });
 
-            const data = await firstValueFrom(response);
-            if (!data) return res.sendStatus(HttpStatus.UNAUTHORIZED);
+            const { status, message, ...data } = await firstValueFrom(response);
+            if (status !== 200) return res.status(status).json({ message });
+
             const { refreshToken, ...restData } = data;
             return res.cookie('refresh-token', refreshToken).json(restData);
         } catch (e) {

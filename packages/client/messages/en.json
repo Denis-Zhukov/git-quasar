@@ -5,9 +5,11 @@
     "sign-in": "Sign In",
     "to-register-text": "Don't have account?",
     "to-register": "Sign Up",
-    "wrong": "Wrong username/email or password",
     "login-error": "Username/email is required",
-    "password-error": "Password is required"
+    "password-error": "Password is required",
+    "deleted": "This account was deleted",
+    "blocked": "This account is blocked",
+    "unconfirmed": "To log in you need to confirm your email"
   },
   "register-form": {
     "username": {
@@ -74,6 +76,8 @@
     "create": "Create"
   },
   "profile": {
+    "block": "Block",
+    "unblock": "Unblock",
     "edit": "Edit",
     "followers": "Followers",
     "following": "Following",

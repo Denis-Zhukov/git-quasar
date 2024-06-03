@@ -5,4 +5,5 @@ export interface LeftBlockProps {
     surname: string;
     followers: number;
     following: number;
+    blocked: boolean;
 }

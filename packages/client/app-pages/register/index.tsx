@@ -65,6 +65,7 @@ export const RegisterPage = ({ params: { locale } }: RegisterPageProps) => {
                 />
                 <TextField
                     {...passwordProps}
+                    type="password"
                     onBlur={handlePasswordBlur}
                     label={t('password.label')}
                     helperText={
@@ -76,6 +77,7 @@ export const RegisterPage = ({ params: { locale } }: RegisterPageProps) => {
                 />
                 <TextField
                     {...register('confirmPassword')}
+                    type="password"
                     label={t('confirm-password.label')}
                     helperText={errors.confirmPassword?.message}
                     error={!!errors.confirmPassword}

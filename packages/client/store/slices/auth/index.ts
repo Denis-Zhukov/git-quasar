@@ -32,10 +32,7 @@ const authSlice = createSliceWithThunks({
                 try {
                     return await authService.login(data);
                 } catch (e: any) {
-                    if ('message' in e) {
-                        return thunkAPI.rejectWithValue(e?.message);
-                    }
-                    return thunkAPI.rejectWithValue('Unknown error');
+                    return thunkAPI.rejectWithValue(e?.response.data);
                 }
             },
             {
@@ -44,6 +41,7 @@ const authSlice = createSliceWithThunks({
                 },
                 rejected: (state, action) => {
                     state.error = action.payload ?? action.error;
+                    console.log(state.error);
                     state.username = null;
                     state.authorized = false;
                     state.avatar = null;

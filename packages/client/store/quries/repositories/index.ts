@@ -3,6 +3,7 @@ import { URLS } from '@/constants/urls';
 import { api } from '../api';
 import {
     CreateRepositoryData,
+    FavoriteRepository,
     GetFileData,
     GetFileResponse,
     GetRepositoriesResponse,
@@ -20,11 +21,13 @@ const repositoriesApi = api.injectEndpoints({
             }),
         }),
         getInfo: build.query<GetRepositoryResponse, GetRepositoryData>({
-            query: ({ username, repository, branch }) => ({
+            providesTags: ['favorite'],
+            query: ({ username, repository, branch, currentUser }) => ({
                 url: URLS.generateGetInfoRepository(
                     username,
                     repository,
                     branch,
+                    currentUser,
                 ),
                 method: 'GET',
             }),
@@ -49,6 +52,14 @@ const repositoriesApi = api.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        favoriteRepository: build.mutation<unknown, FavoriteRepository>({
+            query: (body) => ({
+                url: URLS.favoriteRepository,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['favorite'],
+        }),
     }),
 });
 
@@ -57,4 +68,5 @@ export const {
     useGetInfoQuery,
     useLazyGetFileQuery,
     useGetRepositoriesQuery,
+    useFavoriteRepositoryMutation,
 } = repositoriesApi;

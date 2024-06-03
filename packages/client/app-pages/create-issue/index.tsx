@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import { CreateIssueForm } from '@/app-pages/create-issue/types';
 import { Button, TextField } from '@/components/mui';
+import { useRolesRedirect } from '@/hooks/roles-redirect';
 import { useCreateIssueMutation } from '@/store/quries/issues';
 
 import { Main } from './style';
@@ -14,6 +15,7 @@ export const CreateIssue = ({
 }: {
     params: { username: string; repository: string };
 }) => {
+    useRolesRedirect();
     const t = useTranslations('create-issue');
     const { register, handleSubmit } = useForm<CreateIssueForm>();
 

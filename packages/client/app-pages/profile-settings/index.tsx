@@ -1,9 +1,12 @@
 'use client';
+
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { Account } from '@/app-pages/profile-settings/account';
 import { Profile } from '@/app-pages/profile-settings/profile';
 import { Tab, TabContext, TabList, TabPanel } from '@/components/mui';
+import { useRolesRedirect } from '@/hooks/roles-redirect';
 
 import { Main } from './style';
 
@@ -12,6 +15,7 @@ export const ProfileSettingsPage = ({
 }: {
     params: { name: string };
 }) => {
+    useRolesRedirect();
     const t = useTranslations('profile-settings');
     const [tab, setTab] = useState('profile');
 
@@ -31,7 +35,9 @@ export const ProfileSettingsPage = ({
                     <Profile username={name} />
                 </TabPanel>
                 <TabPanel value="notifications">2</TabPanel>
-                <TabPanel value="account">3</TabPanel>
+                <TabPanel value="account">
+                    <Account username={name} />
+                </TabPanel>
             </TabContext>
         </Main>
     );

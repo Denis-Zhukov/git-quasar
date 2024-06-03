@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
+import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
 import { RepositoryService } from './repository.service';
@@ -25,8 +26,14 @@ export class RepositoryController {
         @Param()
             { username, repository }: { username: string; repository: string },
         @Query('branch') branch: string,
+        @Query('currentUser') currentUser: string,
     ) {
-        return await this.service.infoRepo(username, repository, branch);
+        return await this.service.infoRepo(
+            username,
+            repository,
+            branch,
+            currentUser,
+        );
     }
 
     @Get('/file/:username/:repository')
@@ -73,7 +80,12 @@ export class RepositoryController {
     }
 
     @MessagePattern('repository.favorite')
-    async favoriteRepository(@Payload() dto: CreateIssueDto) {
-        return await this.service.createIssue(dto);
+    async favoriteRepository(@Payload() dto: FavoriteRepoDto) {
+        return await this.service.favorite(dto);
+    }
+
+    @Get('/favorites/:username')
+    async getFavorites(@Param('username') username: string) {
+        return await this.service.getFavorites(username);
     }
 }

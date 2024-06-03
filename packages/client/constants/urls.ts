@@ -10,8 +10,9 @@ export const URLS = {
         username: string,
         repository: string,
         branch: string,
+        currentUser: string,
     ) =>
-        `${BACKEND_URL}/repository/info/${username}/${repository}?branch=${branch}`,
+        `${BACKEND_URL}/repository/info/${username}/${repository}?branch=${branch}&currentUser=${currentUser}`,
     generateGetFileRepository: (
         username: string,
         repository: string,
@@ -21,8 +22,11 @@ export const URLS = {
         `${BACKEND_URL}/repository/file/${username}/${repository}?filepath=${filepath}&branch=${branch}`,
     generateGetRepositories: (username: string) =>
         `${BACKEND_URL}/repository/name/${username}`,
+    favoriteRepository: `${BACKEND_URL}/repository/favorite`,
     getAccountByName: (username: string) =>
         `${BACKEND_URL}/account/name/${username}`,
+    getFavoritesByName: (username: string) =>
+        `${BACKEND_URL}/repository/favorites/${username}`,
     getRepositoriesByName: (username: string) =>
         `${BACKEND_URL}/repository/name/${username}`,
     getAvatarUrl: (img: string) => `${BACKEND_URL}/account/avatars/${img}`,
@@ -38,4 +42,8 @@ export const URLS = {
         `${BACKEND_URL}/issues/${username}/${repository}`,
     generateGetIssue: (issue: string) => `${BACKEND_URL}/issues/${issue}`,
     messageIssue: `${BACKEND_URL}/issues/message`,
+    generateToggleBlock: (username: string) =>
+        `${BACKEND_URL}/account/${username}/toggle-block-status`,
+    generateToggleDeactivated: (username: string) =>
+        `${BACKEND_URL}/account/${username}/toggle-deactivate-status`,
 } as const;

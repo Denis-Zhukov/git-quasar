@@ -1,3 +1,5 @@
+import { notFound } from 'next/navigation';
+
 import { LeftBlock } from '@/components/profile/left-block';
 import { RightBlock } from '@/components/profile/right-block';
 import { URLS } from '@/constants/urls';
@@ -20,7 +22,16 @@ export const ProfilePage = async ({
         followers,
         following,
         bio,
+        blocked,
+        deactivated,
     } = await response.json();
+
+    const repositoryResponse = await fetch(URLS.getFavoritesByName(name), {
+        cache: 'no-store',
+    });
+    const repositories = await repositoryResponse.json();
+
+    if (deactivated) return notFound();
 
     return (
         <Main>
@@ -31,8 +42,9 @@ export const ProfilePage = async ({
                 surname={surname}
                 followers={followers}
                 following={following}
+                blocked={blocked}
             />
-            <RightBlock bio={bio} username={name} />
+            <RightBlock bio={bio} username={name} favorites={repositories} />
         </Main>
     );
 };

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, HttpStatus } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AuthService } from './auth.service';
@@ -13,7 +13,9 @@ export class AuthController {
 
     @MessagePattern('account.auth.login')
     public async login(@Payload() dto: LoginDto) {
-        return this.service.login(dto);
+        const result = await this.service.login(dto);
+        if ('status' in result) return result;
+        return { ...result, status: HttpStatus.OK, message: 'auth' };
     }
 
     @MessagePattern('account.auth.refresh')

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { compare } from 'bcrypt';
 import { sign, verify } from 'jsonwebtoken';
@@ -34,12 +34,20 @@ export class AuthService {
             include: { userRoles: { include: { role: true } } },
         });
 
-        if (!user) throw new RpcException('Wrong username/email or password');
+        if (!user)
+            return { status: HttpStatus.NOT_FOUND, message: 'wrong-creds' };
+
+        if (!user.confirmed)
+            return { status: HttpStatus.UNAUTHORIZED, message: 'unconfirmed' };
+        if (user.blocked)
+            return { status: HttpStatus.UNAUTHORIZED, message: 'blocked' };
+        if (user.deactivated)
+            return { status: HttpStatus.UNAUTHORIZED, message: 'deleted' };
 
         const correct = await compare(password, user.passwordHash);
 
         if (!correct)
-            throw new RpcException('Wrong username/email or password');
+            return { status: HttpStatus.UNAUTHORIZED, message: 'wrong-creds' };
 
         const payload: JwtPayload = {
             id: user.id,

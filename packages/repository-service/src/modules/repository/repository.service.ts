@@ -14,6 +14,7 @@ import * as tmp from 'tmp-promise';
 import { DatabaseService } from '../database/database.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
+import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
 
@@ -82,8 +83,14 @@ export class RepositoryService {
         //tempDir.cleanup();
     }
 
-    public async infoRepo(username: string, repoName: string, branch: string) {
+    public async infoRepo(
+        username: string,
+        repoName: string,
+        branch: string,
+        currentUser?: string,
+    ) {
         const userId = await this.getUserId(username);
+        const currentUserId = await this.getUserId(currentUser);
 
         const gitdir = path.join(
             process.cwd(),
@@ -111,7 +118,17 @@ export class RepositoryService {
             ref: branch ?? repo.main_branch,
         });
 
-        return { files, branches, mainBranch: repo.main_branch };
+        const favorite = await this.db.favorite.findFirst({
+            where: { userId: currentUserId, repositoryId: repo.id },
+        });
+
+        return {
+            files,
+            branches,
+            mainBranch: repo.main_branch,
+            favorite: !!favorite,
+            owner: repo.userId === currentUserId,
+        };
     }
 
     public async infoFile(
@@ -221,7 +238,7 @@ export class RepositoryService {
     }
 
     public async getIssue(issue: string) {
-        return await this.db.issue.findUnique({
+        return this.db.issue.findUnique({
             where: { id: issue },
             include: { IssueMessage: true },
         });
@@ -237,5 +254,42 @@ export class RepositoryService {
                 dislikes: 0,
             },
         });
+    }
+
+    public async favorite({ repository, userId, username }: FavoriteRepoDto) {
+        const user = await this.getUserId(username);
+        if (userId !== user)
+            return { status: HttpStatus.FORBIDDEN, message: 'forbidden' };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+        });
+
+        const favorite = await this.db.favorite.findFirst({
+            where: { userId, repositoryId: repo.id },
+        });
+
+        if (favorite) {
+            await this.db.favorite.deleteMany({ where: { ...favorite } });
+        } else {
+            await this.db.favorite.create({
+                data: { userId, repositoryId: repo.id },
+            });
+        }
+
+        return { status: HttpStatus.CREATED, message: 'done' };
+    }
+
+    public async getFavorites(username: string) {
+        const userId = await this.getUserId(username);
+        if (!userId)
+            return { status: HttpStatus.NOT_FOUND, message: 'not-found' };
+
+        const repos = await this.db.favorite.findMany({
+            where: { userId },
+            select: { repositoryId: true },
+        });
+        const ids = repos.map(({ repositoryId }) => repositoryId);
+        return this.db.repository.findMany({ where: { id: { in: ids } } });
     }
 }

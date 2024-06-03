@@ -72,7 +72,7 @@ export class AccountServiceController {
         return await lastValueFrom(response);
     }
 
-    @Patch(':id/toggle-block-status')
+    @Patch(':username/toggle-block-status')
     async toggleBlockStatus(@Param() params: object, @Body() body: object) {
         const response = this.rmq.send('account.user.block', {
             ...body,
@@ -81,7 +81,7 @@ export class AccountServiceController {
         return await lastValueFrom(response);
     }
 
-    @Patch(':id/toggle-deactivate-status')
+    @Patch(':username/toggle-deactivate-status')
     async toggleDeactivateStatus(
         @Param() params: object,
         @Body() body: object,

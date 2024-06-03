@@ -7,12 +7,15 @@ export interface GetRepositoryData {
     username: string;
     repository: string;
     branch: string;
+    currentUser: string;
 }
 
 export interface GetRepositoryResponse {
     files: string[];
     branches: string[];
     mainBranch: string;
+    favorite: boolean;
+    owner: boolean;
 }
 
 export interface GetFileData {
@@ -34,3 +37,8 @@ export type GetRepositoriesResponse = {
     private: boolean;
     userId: string;
 }[];
+
+export interface FavoriteRepository {
+    username: string;
+    repository: string;
+}

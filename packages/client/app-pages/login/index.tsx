@@ -55,7 +55,7 @@ export const LoginPage = ({ params: { locale } }: LoginPageProps) => {
 
                 {error && (
                     <Alert variant="outlined" severity="error">
-                        {t('wrong')}
+                        {t(error.message)}
                     </Alert>
                 )}
                 <Button

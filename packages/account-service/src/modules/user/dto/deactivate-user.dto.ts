@@ -1,8 +1,8 @@
-import { IsBoolean, IsUUID } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class DeactivateUserDto {
-    @IsUUID('4')
-        id: string;
+    @IsString()
+        username: string;
 
     @IsBoolean()
         deactivated: boolean;

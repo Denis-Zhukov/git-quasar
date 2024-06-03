@@ -13,7 +13,8 @@ export const LoginWrapper = styled.div`
             flex-direction: column;
             gap: ${theme.gap.l}px;
             padding: ${theme.gap.xxl}px;
-            min-width: 400px;
+            max-width: 400px;
+            width: 100%;
             outline: 1px solid white;
         }
     `}

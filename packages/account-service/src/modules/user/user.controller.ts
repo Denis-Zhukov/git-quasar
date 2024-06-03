@@ -59,13 +59,15 @@ export class UserController {
     }
 
     @MessagePattern('account.user.block')
-    public async block(@Payload() { id, blocked }: BlockUserDto) {
-        return this.service.setBlock(id, blocked);
+    public async block(@Payload() { username, blocked }: BlockUserDto) {
+        return this.service.setBlock(username, blocked);
     }
 
     @MessagePattern('account.user.deactivate')
-    public async deactivate(@Payload() { id, deactivated }: DeactivateUserDto) {
-        return this.service.setDeactivated(id, deactivated);
+    public async deactivate(
+        @Payload() { username, deactivated }: DeactivateUserDto,
+    ) {
+        return this.service.setDeactivated(username, deactivated);
     }
 
     @MessagePattern('account.user.confirm')

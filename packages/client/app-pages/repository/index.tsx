@@ -19,6 +19,7 @@ import {
 import { URLS } from '@/constants/urls';
 import { useAppSelector } from '@/hooks/redux-toolkit';
 import {
+    useFavoriteRepositoryMutation,
     useGetInfoQuery,
     useLazyGetFileQuery,
 } from '@/store/quries/repositories';
@@ -54,6 +55,7 @@ export const RepositoryPage = ({
         username,
         repository,
         branch,
+        currentUser: currentUsername!,
     });
     const [getFile, { data: file }] = useLazyGetFileQuery();
     const handleClickFile = (filepath: string) => () => {
@@ -71,6 +73,12 @@ export const RepositoryPage = ({
         setBranch(e.target.value);
     };
 
+    const [favorite] = useFavoriteRepositoryMutation();
+
+    const handleFavorite = () => {
+        favorite({ username, repository });
+    };
+
     return (
         <Block>
             <HeaderRepository>
@@ -86,9 +94,9 @@ export const RepositoryPage = ({
                     ))}
                 </Select>
 
-                {username === currentUsername && (
-                    <Button>
-                        <Unfavorite />
+                {username === currentUsername && data?.owner && (
+                    <Button onClick={handleFavorite}>
+                        {data?.favorite ? <Favorite /> : <Unfavorite />}
                     </Button>
                 )}
 

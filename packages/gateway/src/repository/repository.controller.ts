@@ -4,6 +4,7 @@ import {
     Get,
     Inject,
     Param,
+    Patch,
     Post,
     Query,
     Redirect,
@@ -76,6 +77,32 @@ export class RepositoryController {
         Object.entries(quries).forEach(([key, value]: [string, string]) =>
             url.searchParams.append(key, value),
         );
+        return { url: url.toString() };
+    }
+
+    @Roles('user')
+    @UseGuards(RolesGuard)
+    @Patch('favorite')
+    async favoriteRepository(
+        @Body() body: object,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const { user } = res.locals;
+        const response = this.rmq.send('repository.favorite', {
+            userId: user.id,
+            ...body,
+        });
+        return firstValueFrom(response);
+    }
+
+    @Get('/favorites/:username')
+    @Redirect()
+    async getFavorites(@Param('username') username: object) {
+        const url = new URL(
+            `repository/favorites/${username}`,
+            process.env.REPOSITORY_HOST,
+        );
+
         return { url: url.toString() };
     }
 }

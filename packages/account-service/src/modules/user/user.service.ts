@@ -88,16 +88,17 @@ export class UserService {
         return { idLink, username, email };
     }
 
-    public async setBlock(id: string, blocked: boolean) {
+    public async setBlock(username: string, blocked: boolean) {
         return this.db.user.update({
-            where: { id },
+            where: { username },
             data: { blocked },
         });
     }
 
-    public async setDeactivated(id: string, deactivated: boolean) {
+    public async setDeactivated(username: string, deactivated: boolean) {
+        console.log(username, deactivated);
         return this.db.user.update({
-            where: { id },
+            where: { username },
             data: { deactivated },
         });
     }
