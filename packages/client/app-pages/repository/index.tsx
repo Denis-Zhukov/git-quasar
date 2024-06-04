@@ -10,12 +10,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FileObserver } from '@/components/file-observer';
 import { FileTree } from '@/components/file-tree';
 import {
+    Breadcrumbs,
     Button,
     MenuItem,
     Select,
     Skeleton,
     TextField,
 } from '@/components/mui';
+import { theme } from '@/constants/theme';
 import { URLS } from '@/constants/urls';
 import { useAppSelector } from '@/hooks/redux-toolkit';
 import {
@@ -25,100 +27,104 @@ import {
 } from '@/store/quries/repositories';
 import { selectAuth } from '@/store/slices/auth/selectors';
 
-import { Block, Explorer, GetRepository, HeaderRepository } from './style';
+import {
+    Block,
+    Explorer,
+    GetRepository,
+    HeaderRepository,
+    RepositoryNav,
+} from './style';
 
 export const RepositoryPage = ({
     params: { username, repository },
 }: {
     params: { username: string; repository: string };
 }) => {
-    const locale = useLocale();
-    const { username: currentUsername } = useAppSelector(selectAuth);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
     const t = useTranslations('repository');
+    const locale = useLocale();
+
+    const { username: currentUsername } = useAppSelector(selectAuth);
+
+    const [anchorGetRepo, setAnchorGetRepo] =
+        React.useState<null | HTMLElement>(null);
+    const getRepoIsOpen = Boolean(anchorGetRepo);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
+        setAnchorGetRepo(event.currentTarget);
+    const handleClose = () => setAnchorGetRepo(null);
 
     const inputLinkRepoRef = useRef<HTMLInputElement | null>(null);
-    const handleSelect = () => {
-        inputLinkRepoRef.current?.select();
-    };
+    const handleSelectAllText = () => inputLinkRepoRef.current?.select();
 
-    const firstRef = useRef<boolean>(true);
     const [branch, setBranch] = useState('');
-    const { data, isLoading } = useGetInfoQuery({
+    const { data } = useGetInfoQuery({
         username,
         repository,
         branch,
         currentUser: currentUsername!,
     });
-    const [getFile, { data: file }] = useLazyGetFileQuery();
-    const handleClickFile = (filepath: string) => () => {
-        getFile({ username, repository, filepath, branch });
-    };
+    const [getFile, { data: dataFile }] = useLazyGetFileQuery();
+    const [favorite] = useFavoriteRepositoryMutation();
 
+    const handleClickFile = (filepath: string) => () =>
+        getFile({ username, repository, filepath, branch });
+    const handleFavorite = () => favorite({ username, repository });
+
+    const firstRef = useRef<boolean>(true);
     useEffect(() => {
         if (data && firstRef.current) {
             setBranch(data.mainBranch);
             firstRef.current = false;
         }
     }, [data]);
-
     const handleChangeBranch = (e: SelectChangeEvent) => {
         setBranch(e.target.value);
     };
 
-    const [favorite] = useFavoriteRepositoryMutation();
-
-    const handleFavorite = () => {
-        favorite({ username, repository });
-    };
+    const crumbs = dataFile?.path.replace(/^.\//, '').split('/');
 
     return (
         <Block>
+            <RepositoryNav>
+                <Link
+                    href={`/${locale}/repository/${username}/${repository}/issues`}
+                >
+                    {t('issues')}
+                </Link>
+                <Link
+                    href={`/${locale}/repository/${username}/${repository}/settings`}
+                >
+                    {t('settings')}
+                </Link>
+
+                {username === currentUsername && data?.owner && (
+                    <Button onClick={handleFavorite} size="small">
+                        {data?.favorite ? <Favorite /> : <Unfavorite />}
+                    </Button>
+                )}
+            </RepositoryNav>
+
             <HeaderRepository>
                 <Select value={branch} onChange={handleChangeBranch}>
                     {data?.branches.map((branch) => (
-                        <MenuItem
-                            key={branch}
-                            value={branch}
-                            selected={branch === 'main'}
-                        >
+                        <MenuItem key={branch} value={branch}>
                             {branch}
                         </MenuItem>
                     ))}
                 </Select>
 
-                {username === currentUsername && data?.owner && (
-                    <Button onClick={handleFavorite}>
-                        {data?.favorite ? <Favorite /> : <Unfavorite />}
-                    </Button>
-                )}
-
-                <Link
-                    href={`/${locale}/repository/${username}/${repository}/issues`}
-                >
-                    Issues
-                </Link>
-
                 <Button
                     id="basic-button"
-                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-controls={getRepoIsOpen ? 'basic-menu' : undefined}
                     aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
+                    aria-expanded={getRepoIsOpen ? 'true' : undefined}
                     onClick={handleClick}
                 >
                     {t('get-repo')}
                 </Button>
                 <GetRepository
                     id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
+                    anchorEl={anchorGetRepo}
+                    open={getRepoIsOpen}
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button',
@@ -126,8 +132,8 @@ export const RepositoryPage = ({
                 >
                     <TextField
                         inputRef={inputLinkRepoRef}
-                        onFocus={handleSelect}
-                        onClick={handleSelect}
+                        onFocus={handleSelectAllText}
+                        onClick={handleSelectAllText}
                         value={URLS.getRepoUrl(username, repository)}
                     />
                     <a
@@ -142,15 +148,27 @@ export const RepositoryPage = ({
             </HeaderRepository>
 
             <Explorer>
-                {isLoading ? (
-                    <Skeleton variant="rectangular" width={500} height={400} />
-                ) : (
-                    <FileTree
-                        onClickFile={handleClickFile}
-                        files={data?.files ?? []}
-                    />
-                )}
-                <FileObserver content={file?.file ?? '...'} />
+                <h3>{t('directory')}</h3>
+                <Breadcrumbs>
+                    {crumbs?.map((crumb, i) => (
+                        <span
+                            key={`${crumb}-${i}`}
+                            style={{
+                                color:
+                                    i === crumbs.length - 1
+                                        ? theme.color.primary
+                                        : 'inherit',
+                            }}
+                        >
+                            {crumb}
+                        </span>
+                    ))}
+                </Breadcrumbs>
+                <FileTree
+                    onClickFile={handleClickFile}
+                    files={data?.files ?? []}
+                />
+                <FileObserver content={dataFile?.file ?? '...'} />
             </Explorer>
         </Block>
     );

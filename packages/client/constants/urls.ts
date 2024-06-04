@@ -23,6 +23,9 @@ export const URLS = {
     generateGetRepositories: (username: string) =>
         `${BACKEND_URL}/repository/name/${username}`,
     favoriteRepository: `${BACKEND_URL}/repository/favorite`,
+    addCollaborator: `${BACKEND_URL}/repository/collaborator`,
+    generateGetCollaborators: (username: string, repository: string) =>
+        `${BACKEND_URL}/repository/collaborators/${username}/${repository}`,
     getAccountByName: (username: string) =>
         `${BACKEND_URL}/account/name/${username}`,
     getFavoritesByName: (username: string) =>

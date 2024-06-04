@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
             return false;
         }
 
-        if (!requiredRoles.length) {
+        if (!requiredRoles || !requiredRoles.length) {
             return true;
         }
 

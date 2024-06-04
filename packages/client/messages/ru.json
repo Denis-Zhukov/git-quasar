@@ -93,7 +93,10 @@
   },
   "repository": {
     "get-repo": "Получить репозиторий",
-    "download": "Скачать"
+    "download": "Скачать",
+    "directory": "Директория",
+    "issues": "Обсуждения",
+    "settings": "Настройки"
   },
   "profile-settings": {
     "profile": "Профиль",
@@ -122,5 +125,17 @@
   },
   "admin-statistics": {
     "count": "Количество"
+  },
+  "repository-settings": {
+    "repo": "Репозиторий",
+    "collaborators": "Участники",
+    "collaborators-tab": {
+      "title": "Участники",
+      "user": "Пользователь",
+      "username": "Логин",
+      "add-collaborator": "Предоставить доступ",
+      "collaborator-required": "Необходимо ввести логин",
+      "no-collaborators": "Нет ни одного участника"
+    }
   }
 }

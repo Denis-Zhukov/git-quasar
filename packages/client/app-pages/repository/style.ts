@@ -15,7 +15,27 @@ export const Block = styled.main`
     `}
 `;
 
-export const HeaderRepository = styled.nav`
+export const RepositoryNav = styled.nav`
+    ${({ theme }) => css`
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid ${theme.color.primary};
+        padding: ${theme.gap.m}px;
+        gap: ${theme.gap.l}px;
+
+        a {
+            text-decoration: none;
+            color: ${theme.color.primary};
+        }
+
+        button {
+            min-width: 0;
+            margin-left: auto;
+        }
+    `}
+`;
+
+export const HeaderRepository = styled.div`
     ${({ theme }) => css`
         display: flex;
         justify-content: space-between;
@@ -38,21 +58,18 @@ export const GetRepository = styled(Menu)`
 `;
 
 export const Explorer = styled.div`
-    display: flex;
-    height: 600px;
+    ${({ theme }) => css`
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        grid-template-rows: 40px 1fr;
+        height: 600px;
 
-    ul {
-        list-style: none;
-    }
+        h3 {
+            color: ${theme.color.primary};
+        }
 
-    > *:nth-child(1) {
-        flex-basis: 250px;
-        flex-shrink: 0;
-        height: 100%;
-    }
-
-    > *:nth-child(2) {
-        flex-grow: 1;
-        height: 100%;
-    }
+        ul {
+            list-style: none;
+        }
+    `}
 `;

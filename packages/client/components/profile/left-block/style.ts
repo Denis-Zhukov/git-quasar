@@ -8,6 +8,7 @@ export const Block = styled.aside`
         flex-direction: column;
         align-items: center;
         flex-grow: 1;
+        flex-shrink: 0;
         color: ${theme.color.primary};
         gap: ${theme.gap.l}px;
     `}

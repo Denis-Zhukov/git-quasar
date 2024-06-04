@@ -1,7 +1,7 @@
 'use client';
 
 import FolderIcon from '@mui/icons-material/Folder';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { getFilesOnCurrentLevel } from '@/utils/get-files-on-current-level';
 
@@ -10,6 +10,10 @@ import { FileTreeProps } from './types';
 
 export const FileTree = ({ files, onClickFile }: FileTreeProps) => {
     const [currentDir, setCurrentDir] = useState('.');
+
+    useEffect(() => {
+        setCurrentDir('.');
+    }, [files]);
 
     const items = useMemo(() => {
         const unsortedFiles = getFilesOnCurrentLevel(files, currentDir);

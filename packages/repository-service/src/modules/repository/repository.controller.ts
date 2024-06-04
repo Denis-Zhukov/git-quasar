@@ -1,11 +1,13 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
+import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
+import { RemoveCollaboratorDto } from './dto/remove-collaborator.dto';
 import { RepositoryService } from './repository.service';
 
 @Controller('repository')
@@ -43,7 +45,13 @@ export class RepositoryController {
         @Query('filepath') path: string,
         @Query('branch') branch: string,
     ) {
-        return await this.service.infoFile(username, repository, path, branch);
+        const { file } = await this.service.infoFile(
+            username,
+            repository,
+            path,
+            branch,
+        );
+        return { file, path };
     }
 
     @MessagePattern('repository.create')
@@ -87,5 +95,23 @@ export class RepositoryController {
     @Get('/favorites/:username')
     async getFavorites(@Param('username') username: string) {
         return await this.service.getFavorites(username);
+    }
+
+    @MessagePattern('repository.collaborator.add')
+    async addCollaborator(@Payload() dto: AddCollaboratorDto) {
+        return await this.service.addCollaborator(dto);
+    }
+
+    @Get('/collaborators/:username/:repository')
+    async getCollaborators(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+    ) {
+        return await this.service.getCollaborators({ username, repository });
+    }
+
+    @MessagePattern('repository.collaborator.remove')
+    async removeCollaborator(@Payload() dto: RemoveCollaboratorDto) {
+        return await this.service.removeCollaborator(dto);
     }
 }

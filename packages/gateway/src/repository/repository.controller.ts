@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Inject,
     Param,
@@ -104,5 +105,42 @@ export class RepositoryController {
         );
 
         return { url: url.toString() };
+    }
+
+    @UseGuards(RolesGuard)
+    @Post('/collaborator')
+    async addCollaborator(@Body() body: object, @Res() res: Response) {
+        const { user } = res.locals;
+        const response = this.rmq.send('repository.collaborator.add', {
+            ...body,
+        });
+        const { status, message } = await firstValueFrom(response);
+
+        res.status(status).json({ message });
+    }
+
+    @Get('/collaborators/:username/:repository')
+    @Redirect()
+    async getCollaborators(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+    ) {
+        const url = new URL(
+            `repository/collaborators/${username}/${repository}`,
+            process.env.REPOSITORY_HOST,
+        );
+
+        return { url: url.toString() };
+    }
+
+    @UseGuards(RolesGuard)
+    @Delete('/collaborator')
+    async remomoveCollaborator(@Body() body: object, @Res() res: Response) {
+        const { user } = res.locals;
+        const response = this.rmq.send('repository.collaborator.remove', {
+            ...body,
+        });
+        const { status, message } = await firstValueFrom(response);
+        res.status(status).json({ message });
     }
 }

@@ -11,13 +11,15 @@ import { firstValueFrom } from 'rxjs';
 import simpleGit from 'simple-git';
 import * as tmp from 'tmp-promise';
 
-import { gitBlame } from '../../utils/git-utils';
 import { DatabaseService } from '../database/database.service';
+import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
+import { GetCollaboratorsDto } from './dto/get-collaborators.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
+import { RemoveCollaboratorDto } from './dto/remove-collaborator.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -30,6 +32,12 @@ export class RepositoryService {
         const response = this.rmq.send('account.user.one.name', { name });
         const user = await firstValueFrom(response);
         return user.id as string;
+    }
+
+    private async getUserById(id: string) {
+        const response = this.rmq.send('account.user.one', { id });
+        const user = await firstValueFrom(response);
+        return user;
     }
 
     public async downloadRepo(
@@ -290,5 +298,91 @@ export class RepositoryService {
         });
         const ids = repos.map(({ repositoryId }) => repositoryId);
         return this.db.repository.findMany({ where: { id: { in: ids } } });
+    }
+
+    public async addCollaborator({
+        repository,
+        collaborator,
+        username,
+    }: AddCollaboratorDto) {
+        const userId = await this.getUserId(username);
+        if (!userId)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-user' };
+
+        const collaboratorId = await this.getUserId(collaborator);
+        if (!collaboratorId)
+            return {
+                status: HttpStatus.NOT_FOUND,
+                message: 'no-such-collaborator',
+            };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+            include: { Collaborator: true },
+        });
+        if (!repo)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-repo' };
+        if (repo.userId === collaboratorId)
+            return { status: HttpStatus.BAD_REQUEST, message: 'you-owner' };
+
+        if (repo.Collaborator.find(({ userId }) => userId === collaboratorId))
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'already-exists',
+            };
+
+        await this.db.collaborator.create({
+            data: {
+                repositoryId: repo.id,
+                userId: collaboratorId,
+            },
+        });
+
+        return { status: HttpStatus.CREATED, message: 'done' };
+    }
+
+    public async getCollaborators({
+        repository,
+        username,
+    }: GetCollaboratorsDto) {
+        const userId = await this.getUserId(username);
+        if (!userId)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-user' };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+        });
+        if (!repo)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-repo' };
+
+        const collaboratorsId = await this.db.collaborator.findMany({
+            where: { repositoryId: repo.id },
+        });
+        const collaborators = collaboratorsId.map(async ({ userId }) => {
+            const { id, email, username } = await this.getUserById(userId);
+            return { id, email, username };
+        });
+        return await Promise.all(collaborators);
+    }
+
+    public async removeCollaborator({
+        repository,
+        username,
+        collaboratorId,
+    }: RemoveCollaboratorDto) {
+        const userId = await this.getUserId(username);
+        if (!userId)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-user' };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+        });
+        if (!repo)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-repo' };
+
+        await this.db.collaborator.delete({
+            where: { userId: collaboratorId, repositoryId: repo.id },
+        });
+        return { status: HttpStatus.OK, message: 'done' };
     }
 }

@@ -92,7 +92,10 @@
   },
   "repository": {
     "get-repo": "Get repository",
-    "download": "Download"
+    "download": "Download",
+    "directory": "Directory",
+    "issues": "Issues",
+    "settings": "Settings"
   },
   "profile-settings": {
     "profile": "Profile",
@@ -121,5 +124,17 @@
   },
   "admin-statistics": {
     "count": "Count"
+  },
+  "repository-settings": {
+    "repo": "Repository",
+    "collaborators": "Collaborators",
+    "collaborators-tab": {
+      "title": "Collaborators",
+      "user": "User",
+      "username": "Username",
+      "add-collaborator": "Add collaborator",
+      "collaborator-required": "Collaborator username is required",
+      "no-collaborators": "No collaborators"
+    }
   }
 }

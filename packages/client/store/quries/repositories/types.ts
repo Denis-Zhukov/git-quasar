@@ -27,6 +27,7 @@ export interface GetFileData {
 
 export interface GetFileResponse {
     file: string;
+    path: string;
 }
 
 export type GetRepositoriesResponse = {
@@ -39,6 +40,29 @@ export type GetRepositoriesResponse = {
 }[];
 
 export interface FavoriteRepository {
+    username: string;
+    repository: string;
+}
+
+export interface AddCollaboratorData {
+    username: string;
+    repository: string;
+    collaborator: string;
+}
+
+export interface GetCollaboratorsData {
+    username: string;
+    repository: string;
+}
+
+export type GetCollaboratorsResponse = {
+    id: string;
+    username: string;
+    email: string;
+}[];
+
+export interface RemoveCollaboratorData {
+    collaboratorId: string;
     username: string;
     repository: string;
 }

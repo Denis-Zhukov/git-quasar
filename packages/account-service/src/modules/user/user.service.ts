@@ -28,6 +28,9 @@ export class UserService {
 
     public async getUserByName(username: string) {
         const user = await this.db.user.findUnique({ where: { username } });
+        if (!user)
+            return { status: HttpStatus.NOT_FOUND, message: 'user-not-found' };
+
         const followers = await this.db.subscriber.count({
             where: { userId: user.id },
         });
