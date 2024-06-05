@@ -96,7 +96,8 @@
     "download": "Download",
     "directory": "Directory",
     "issues": "Issues",
-    "settings": "Settings"
+    "settings": "Settings",
+    "statistics": "Statistics"
   },
   "profile-settings": {
     "profile": "Profile",

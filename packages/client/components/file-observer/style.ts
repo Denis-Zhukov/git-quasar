@@ -29,6 +29,7 @@ export const Content = styled.code`
 
         div:nth-child(1) {
             flex-shrink: 0;
+            text-align: right;
         }
 
         div:nth-child(2) {

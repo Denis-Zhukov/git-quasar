@@ -3,26 +3,46 @@ interface FileSystemItem {
     type: 'file' | 'folder';
 }
 
+function normalizePath(path: string): string {
+    return path.replace(/^\.\//, '').replace(/^\.$/, '');
+}
+
 export const getFilesOnCurrentLevel = (
     paths: string[],
     path: string,
 ): FileSystemItem[] => {
-    const normalizedPath =
-        path === '' || path === '.' ? '' : path.replace(/^[./]\/?/, '') + '/';
-    const itemsInDirectory = new Map<string, FileSystemItem>();
+    const normalizedPath = normalizePath(path);
+    const pathPrefix = normalizedPath ? normalizedPath + '/' : '';
 
-    paths.forEach((p) => {
-        if (normalizedPath === '') {
-            const firstPart = p.split('/')[0];
-            const type = firstPart.includes('.') ? 'file' : 'folder';
-            itemsInDirectory.set(firstPart, { name: firstPart, type });
-        } else if (p.startsWith(normalizedPath)) {
-            const relativePath = p.slice(normalizedPath.length);
-            const firstPart = relativePath.split('/')[0];
-            const type = relativePath.includes('/') ? 'folder' : 'file';
-            itemsInDirectory.set(firstPart, { name: firstPart, type });
+    const result: FileSystemItem[] = [];
+    const seenItems = new Set<string>();
+    const folders = new Set<string>();
+
+    paths.forEach((fullPath) => {
+        if (fullPath.startsWith(pathPrefix)) {
+            const relativePath = fullPath.slice(pathPrefix.length);
+            const [item] = relativePath.split('/');
+
+            if (item) {
+                if (relativePath.includes('/')) {
+                    folders.add(item);
+                }
+                if (!seenItems.has(item)) {
+                    seenItems.add(item);
+                    result.push({
+                        name: item,
+                        type: folders.has(item) ? 'folder' : 'file',
+                    });
+                }
+            }
         }
     });
 
-    return Array.from(itemsInDirectory.values());
+    result.forEach((item) => {
+        if (folders.has(item.name)) {
+            item.type = 'folder';
+        }
+    });
+
+    return result;
 };

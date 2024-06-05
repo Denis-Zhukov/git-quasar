@@ -17,12 +17,15 @@ export const FileTree = ({ files, onClickFile }: FileTreeProps) => {
 
     const items = useMemo(() => {
         const unsortedFiles = getFilesOnCurrentLevel(files, currentDir);
+
         const currentFiles = unsortedFiles
             .filter(({ type }) => type === 'file')
             .sort((a, b) => a.name.localeCompare(b.name));
+
         const currentFolders = unsortedFiles
             .filter(({ type }) => type === 'folder')
             .sort((a, b) => a.name.localeCompare(b.name));
+
         return currentFolders.concat(currentFiles);
     }, [files, currentDir]);
 

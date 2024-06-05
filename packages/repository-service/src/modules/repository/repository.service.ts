@@ -1,12 +1,11 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import git from 'isomorphic-git';
 import * as JSZip from 'jszip';
 import * as path from 'path';
-import * as process from 'process';
 import { firstValueFrom } from 'rxjs';
 import simpleGit from 'simple-git';
 import * as tmp from 'tmp-promise';
@@ -458,5 +457,40 @@ export class RepositoryService {
             where: { userId: collaboratorId, repositoryId: repo.id },
         });
         return { status: HttpStatus.OK, message: 'done' };
+    }
+
+    public async getStatisticsCommits(
+        username: string,
+        repository: string,
+        branch: string,
+    ) {
+        const owner = await this.getUserByName(username);
+        if (!owner)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-owner' };
+
+        const gitdir = path.join(
+            process.cwd(),
+            'repositories',
+            owner.id,
+            repository,
+        );
+
+        const gitS = simpleGit(gitdir);
+        const authorCount = new Map<string, number>();
+
+        const commits = await gitS.log(['--all']);
+        commits.all.forEach(({ author_name }) => {
+            if (authorCount.has(author_name)) {
+                authorCount.set(author_name, authorCount.get(author_name) + 1);
+            } else {
+                authorCount.set(author_name, 1);
+            }
+        });
+
+        return {
+            statistic: Object.fromEntries(authorCount.entries()),
+            status: HttpStatus.OK,
+            message: 'get',
+        };
     }
 }

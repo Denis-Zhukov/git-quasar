@@ -52,4 +52,6 @@ export const URLS = {
     generateToggleDeactivated: (username: string) =>
         `${BACKEND_URL}/account/${username}/toggle-deactivate-status`,
     accountStatistics: `${BACKEND_URL}/statistics/create-account`,
+    generateGetStatisticCommits: (username: string, repository: string) =>
+        `${BACKEND_URL}/statistics/commits/${username}/${repository}`,
 } as const;

@@ -138,4 +138,19 @@ export class RepositoryController {
         });
         res.status(status).json({ ...rest, path: filepath });
     }
+
+    @Get('/statistics/:username/:repository/commits')
+    async getStatisticsCommits(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+        @Query('branch') branch: string,
+        @Res() res: Response,
+    ) {
+        const { status, ...rest } = await this.service.getStatisticsCommits(
+            username,
+            repository,
+            branch,
+        );
+        res.status(status).json({ ...rest });
+    }
 }

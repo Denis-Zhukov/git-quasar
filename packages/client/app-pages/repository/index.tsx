@@ -9,13 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { FileObserver } from '@/components/file-observer';
 import { FileTree } from '@/components/file-tree';
-import {
-    Breadcrumbs,
-    Button,
-    MenuItem,
-    Select,
-    TextField,
-} from '@/components/mui';
+import { Button, MenuItem, Select, TextField } from '@/components/mui';
 import { URLS } from '@/constants/urls';
 import { useAppSelector } from '@/hooks/redux-toolkit';
 import {
@@ -90,14 +84,17 @@ export const RepositoryPage = ({
                 <Link
                     href={`/${locale}/repository/${username}/${repository}/issues`}
                 >
-                    {' '}
-                    {t('issues')}{' '}
+                    {t('issues')}
+                </Link>
+                <Link
+                    href={`/${locale}/repository/${username}/${repository}/statistics`}
+                >
+                    {t('statistics')}
                 </Link>
                 <Link
                     href={`/${locale}/repository/${username}/${repository}/settings`}
                 >
-                    {' '}
-                    {t('settings')}{' '}
+                    {t('settings')}
                 </Link>
 
                 {username === currentUsername && data?.owner && (
