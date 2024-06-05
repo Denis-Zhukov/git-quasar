@@ -12,10 +12,10 @@ export const noCache = (res: Response) => {
     res.setHeader('cache-control', 'no-cache, max-age=0, must-revalidate');
 };
 
-export const gitBlame = (gitdir: string, filepath: string) => {
+export const gitBlame = (gitdir: string, filepath: string, branch: string) => {
     return new Promise((resolve, reject) => {
         const git = simpleGit(gitdir);
-        git.raw(['blame', filepath], (err, data) => {
+        git.raw(['blame', filepath, '-b', branch], (err, data) => {
             if (err) return reject(err);
             resolve(data);
         });

@@ -20,7 +20,9 @@ export class AuthController {
 
     @MessagePattern('account.auth.refresh')
     public async refresh(@Payload() dto: RefreshDto) {
-        return this.service.refresh(dto);
+        const result = await this.service.refresh(dto);
+        if ('status' in result) return result;
+        return { ...result, status: HttpStatus.OK, message: 'updated' };
     }
 
     @MessagePattern('account.auth.logout')

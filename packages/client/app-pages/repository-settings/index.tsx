@@ -4,10 +4,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { Collaborators } from '@/app-pages/repository-settings/collaborators';
 import { Tab, TabContext, TabList } from '@/components/mui';
 import { useRolesRedirect } from '@/hooks/roles-redirect';
 
+import { Collaborators } from './collaborators';
+import { Repository } from './repository';
 import { FullWidthTab, Main } from './style';
 
 export const RepositorySettings = ({
@@ -33,10 +34,12 @@ export const RepositorySettings = ({
         <Main>
             <TabContext value={tab}>
                 <TabList orientation="vertical" onChange={handleChange}>
-                    <Tab label={t('repo')} value="repo"></Tab>
-                    <Tab label={t('collaborators')} value="collaborators"></Tab>
+                    <Tab label={t('repo')} value="repo" />
+                    <Tab label={t('collaborators')} value="collaborators" />
                 </TabList>
-                <FullWidthTab value="repo">1</FullWidthTab>
+                <FullWidthTab value="repo">
+                    <Repository username={username} repository={repository} />
+                </FullWidthTab>
                 <FullWidthTab value="collaborators">
                     <Collaborators
                         username={username}

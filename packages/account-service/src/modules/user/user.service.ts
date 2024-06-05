@@ -23,11 +23,24 @@ export class UserService {
     }
 
     public async getUserByID(id: string) {
-        return this.db.user.findUnique({ where: { id } });
+        const user = await this.db.user.findUnique({
+            where: { id },
+            include: { userRoles: { include: { role: true } } },
+        });
+        if (!user)
+            return { status: HttpStatus.NOT_FOUND, message: 'user-not-found' };
+
+        return {
+            ...user,
+            roles: user.userRoles.map(({ role: { name } }) => name),
+        };
     }
 
     public async getUserByName(username: string) {
-        const user = await this.db.user.findUnique({ where: { username } });
+        const user = await this.db.user.findUnique({
+            where: { username },
+            include: { userRoles: { include: { role: true } } },
+        });
         if (!user)
             return { status: HttpStatus.NOT_FOUND, message: 'user-not-found' };
 
@@ -37,7 +50,13 @@ export class UserService {
         const following = await this.db.subscriber.count({
             where: { followerId: user.id },
         });
-        return { ...user, followers, following };
+
+        return {
+            ...user,
+            followers,
+            following,
+            roles: user.userRoles.map(({ role: { name } }) => name),
+        };
     }
 
     public async createUser({ username, email, password }: CreateUserData) {

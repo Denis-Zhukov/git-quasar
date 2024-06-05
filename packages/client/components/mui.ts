@@ -7,6 +7,11 @@ export {
     Button,
     Card,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Link,
     Menu,
     MenuItem,
@@ -16,5 +21,6 @@ export {
     Tab,
     Tabs,
     TextField,
+    ToggleButton,
     Tooltip,
 } from '@mui/material';

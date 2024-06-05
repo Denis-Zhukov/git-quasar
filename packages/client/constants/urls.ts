@@ -6,6 +6,7 @@ export const URLS = {
     refresh: `${BACKEND_URL}/auth/refresh`,
     logout: `${BACKEND_URL}/auth/logout`,
     createRepository: `${BACKEND_URL}/repository/create`,
+    deleteRepository: `${BACKEND_URL}/repository/delete`,
     generateGetInfoRepository: (
         username: string,
         repository: string,
@@ -18,8 +19,9 @@ export const URLS = {
         repository: string,
         filepath: string,
         branch: string,
+        blame: boolean,
     ) =>
-        `${BACKEND_URL}/repository/file/${username}/${repository}?filepath=${filepath}&branch=${branch}`,
+        `${BACKEND_URL}/repository/file/${username}/${repository}?filepath=${filepath}&branch=${branch}&blame=${blame ? 'true' : 'false'}`,
     generateGetRepositories: (username: string) =>
         `${BACKEND_URL}/repository/name/${username}`,
     favoriteRepository: `${BACKEND_URL}/repository/favorite`,

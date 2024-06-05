@@ -26,16 +26,26 @@ export class RepositoryController {
     @Roles('user')
     @UseGuards(RolesGuard)
     @Post('/create')
-    async createEmptyRepository(
-        @Body() body: object,
-        @Res({ passthrough: true }) res: Response,
-    ) {
+    async createEmptyRepository(@Body() body: object, @Res() res: Response) {
         const { user } = res.locals;
         const response = this.rmq.send('repository.create', {
             userId: user.id,
             ...body,
         });
-        return firstValueFrom(response);
+        const { message, status, ...rest } = await firstValueFrom(response);
+        res.status(status).json({ ...rest, message });
+    }
+
+    @UseGuards(RolesGuard)
+    @Delete('/delete')
+    async deleteRepository(@Body() body: object, @Res() res: Response) {
+        const { user } = res.locals;
+        const response = this.rmq.send('repository.delete', {
+            userId: user.id,
+            ...body,
+        });
+        const { message, status } = await firstValueFrom(response);
+        res.status(status).json({ message });
     }
 
     @Get('/name/:name')
@@ -70,11 +80,22 @@ export class RepositoryController {
 
     @Get('file/:username/:repository')
     @Redirect()
-    async getFileData(@Param() { username, repository }, @Query() quries) {
-        const url = new URL(
-            `/repository/file/${username}/${repository}`,
-            process.env.REPOSITORY_HOST,
-        );
+    async getFileData(
+        @Param() { username, repository },
+        @Query() { blame, ...quries },
+    ) {
+        let url: URL;
+        if (blame === 'true') {
+            url = new URL(
+                `/repository/blame/${username}/${repository}`,
+                process.env.REPOSITORY_HOST,
+            );
+        } else {
+            url = new URL(
+                `/repository/file/${username}/${repository}`,
+                process.env.REPOSITORY_HOST,
+            );
+        }
         Object.entries(quries).forEach(([key, value]: [string, string]) =>
             url.searchParams.append(key, value),
         );
@@ -135,7 +156,7 @@ export class RepositoryController {
 
     @UseGuards(RolesGuard)
     @Delete('/collaborator')
-    async remomoveCollaborator(@Body() body: object, @Res() res: Response) {
+    async removeCollaborator(@Body() body: object, @Res() res: Response) {
         const { user } = res.locals;
         const response = this.rmq.send('repository.collaborator.remove', {
             ...body,

@@ -74,37 +74,52 @@ export class AuthService {
     }
 
     async refresh({ refreshToken }: RefreshDto) {
-        const { id } = verify(
-            refreshToken,
-            process.env.JWT_SECRET_REFRESH,
-        ) as JwtPayload;
+        try {
+            const { id } = verify(
+                refreshToken,
+                process.env.JWT_SECRET_REFRESH,
+            ) as JwtPayload;
 
-        const session = await this.db.session.findFirst({
-            where: { userId: id, refreshToken },
-            include: {
-                user: { include: { userRoles: { include: { role: true } } } },
-            },
-        });
+            const session = await this.db.session.findFirst({
+                where: { userId: id, refreshToken },
+                include: {
+                    user: {
+                        include: { userRoles: { include: { role: true } } },
+                    },
+                },
+            });
 
-        if (!session) throw new RpcException("Session doesn't match");
+            if (!session)
+                return {
+                    status: HttpStatus.UNAUTHORIZED,
+                    message: 'no-such-session',
+                };
 
-        const roles = session.user.userRoles.map(({ role: { name } }) => name);
-        const payload: JwtPayload = {
-            id,
-            roles,
-        };
-
-        const accessToken = this.generateAccessToken(payload);
-
-        return {
-            accessToken,
-            user: {
+            const roles = session.user.userRoles.map(
+                ({ role: { name } }) => name,
+            );
+            const payload: JwtPayload = {
                 id,
-                username: session.user.username,
-                avatar: session.user.avatar,
                 roles,
-            },
-        };
+            };
+
+            const accessToken = this.generateAccessToken(payload);
+
+            return {
+                accessToken,
+                user: {
+                    id,
+                    username: session.user.username,
+                    avatar: session.user.avatar,
+                    roles,
+                },
+            };
+        } catch (e) {
+            return {
+                status: HttpStatus.UNAUTHORIZED,
+                message: 'token-expired',
+            };
+        }
     }
 
     async logout({ refreshToken }: LogoutDto) {
@@ -112,18 +127,22 @@ export class AuthService {
     }
 
     async check({ accessToken }: CheckDto) {
-        const { id } = verify(
-            accessToken,
-            process.env.JWT_SECRET_ACCESS,
-        ) as JwtPayload;
+        try {
+            const { id } = verify(
+                accessToken,
+                process.env.JWT_SECRET_ACCESS,
+            ) as JwtPayload;
 
-        const user = await this.db.user.findUnique({
-            where: { id },
-            include: { userRoles: { include: { role: true } } },
-        });
+            const user = await this.db.user.findUnique({
+                where: { id },
+                include: { userRoles: { include: { role: true } } },
+            });
 
-        const roles = user.userRoles.map(({ role: { name } }) => name);
+            const roles = user.userRoles.map(({ role: { name } }) => name);
 
-        return { id, roles };
+            return { status: HttpStatus.OK, message: 'done', id, roles };
+        } catch (e) {
+            return { status: HttpStatus.UNAUTHORIZED, message: 'jwt-expired' };
+        }
     }
 }

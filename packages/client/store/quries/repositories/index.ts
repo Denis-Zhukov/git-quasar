@@ -4,6 +4,7 @@ import { api } from '../api';
 import {
     AddCollaboratorData,
     CreateRepositoryData,
+    DeleteRepositoryData,
     FavoriteRepository,
     GetCollaboratorsData,
     GetCollaboratorsResponse,
@@ -24,6 +25,13 @@ const repositoriesApi = api.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        delete: build.mutation<unknown, DeleteRepositoryData>({
+            query: (body) => ({
+                body,
+                url: URLS.deleteRepository,
+                method: 'DELETE',
+            }),
+        }),
         getInfo: build.query<GetRepositoryResponse, GetRepositoryData>({
             providesTags: ['favorite'],
             query: ({ username, repository, branch, currentUser }) => ({
@@ -37,12 +45,13 @@ const repositoriesApi = api.injectEndpoints({
             }),
         }),
         getFile: build.query<GetFileResponse, GetFileData>({
-            query: ({ username, repository, filepath, branch }) => ({
+            query: ({ username, repository, filepath, branch, blame }) => ({
                 url: URLS.generateGetFileRepository(
                     username,
                     repository,
                     filepath,
                     branch,
+                    blame,
                 ),
                 method: 'GET',
             }),
@@ -64,7 +73,10 @@ const repositoriesApi = api.injectEndpoints({
             }),
             invalidatesTags: ['favorite'],
         }),
-        addCollaborator: build.mutation<unknown, AddCollaboratorData>({
+        addCollaborator: build.mutation<
+            { message: string },
+            AddCollaboratorData
+        >({
             query: (body) => ({
                 url: URLS.addCollaborator,
                 method: 'POST',
@@ -94,6 +106,7 @@ const repositoriesApi = api.injectEndpoints({
 
 export const {
     useCreateMutation,
+    useDeleteMutation,
     useGetInfoQuery,
     useLazyGetFileQuery,
     useGetRepositoriesQuery,

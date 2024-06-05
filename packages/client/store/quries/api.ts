@@ -27,12 +27,15 @@ const customBaseQuery: BaseQueryFn = async (
     });
 
     let result = await query(args, api, extraOptions);
-
     if (result.error?.status === 401) {
-        await api.dispatch(refresh);
+        await api.dispatch(refresh()).unwrap();
         result = await query(args, api, extraOptions);
     }
-
+    if (result.error) {
+        // eslint-disable-next-line
+        // @ts-ignore
+        result.error = { ...result.error, ...result.error.data };
+    }
     return result;
 };
 

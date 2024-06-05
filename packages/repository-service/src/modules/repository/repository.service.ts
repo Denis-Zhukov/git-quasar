@@ -11,10 +11,13 @@ import { firstValueFrom } from 'rxjs';
 import simpleGit from 'simple-git';
 import * as tmp from 'tmp-promise';
 
+import { gitBlame } from '../../utils/git-utils';
 import { DatabaseService } from '../database/database.service';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
+import { BlameDto } from './dto/blame.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
+import { DeleteRepositoryDto } from './dto/delete-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetCollaboratorsDto } from './dto/get-collaborators.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
@@ -34,10 +37,15 @@ export class RepositoryService {
         return user.id as string;
     }
 
-    private async getUserById(id: string) {
-        const response = this.rmq.send('account.user.one', { id });
+    private async getUserByName(name: string) {
+        const response = this.rmq.send('account.user.one.name', { name });
         const user = await firstValueFrom(response);
         return user;
+    }
+
+    private async getUserById(id: string) {
+        const response = this.rmq.send('account.user.one', { id });
+        return await firstValueFrom(response);
     }
 
     public async downloadRepo(
@@ -89,7 +97,7 @@ export class RepositoryService {
         );
         archiveStream.pipe(res);
 
-        //tempDir.cleanup();
+        tempDir.cleanup();
     }
 
     public async infoRepo(
@@ -120,6 +128,13 @@ export class RepositoryService {
                 data: repo,
             });
         }
+
+        if (!branches.length)
+            return {
+                status: HttpStatus.OK,
+                message: 'is-empty',
+                isEmpty: true,
+            };
 
         const files = await git.listFiles({
             fs,
@@ -166,6 +181,27 @@ export class RepositoryService {
         return { file: data };
     }
 
+    public async blame({ repository, branch, username, filepath }: BlameDto) {
+        const userId = await this.getUserId(username);
+        if (!userId)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-user' };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+            include: { Collaborator: true },
+        });
+
+        const gitdir = path.join(
+            process.cwd(),
+            'repositories',
+            userId,
+            repo.name,
+        );
+
+        const blame = await gitBlame(gitdir, filepath, branch);
+        return { status: HttpStatus.OK, file: blame, message: 'get' };
+    }
+
     public async createRepository({
         userId,
         repoName,
@@ -180,15 +216,53 @@ export class RepositoryService {
         const repo = await this.db.repository.findFirst({
             where: { userId, name: repoName },
         });
-        if (repo) throw new RpcException('Already exists');
+        if (repo)
+            return { status: HttpStatus.CONFLICT, message: 'already-exists' };
 
         fs.mkdirSync(gitdir, { recursive: true });
         const git = simpleGit(gitdir);
         await git.init(['--bare']);
 
-        return this.db.repository.create({
+        const created = await this.db.repository.create({
             data: { userId, name: repoName, private: privateRepo },
         });
+
+        return { ...created, status: HttpStatus.CREATED, message: 'created' };
+    }
+
+    public async deleteRepository({
+        username,
+        repository,
+        userId,
+    }: DeleteRepositoryDto) {
+        const owner = await this.getUserByName(username);
+        if (!owner)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-owner' };
+
+        const user = await this.getUserById(userId);
+        if (!user)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-user' };
+
+        if (owner.id !== user.id && !owner.roles.includes('admin'))
+            return { status: HttpStatus.FORBIDDEN, message: 'no-permission' };
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId: owner.id, name: repository },
+        });
+        if (!repo)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-repo' };
+
+        const gitdir = path.join(
+            process.cwd(),
+            'repositories',
+            owner.id,
+            repo.name,
+        );
+
+        await fsp.rm(gitdir, { recursive: true, force: true });
+        await this.db.repository.delete({ where: { id: repo.id } });
+
+        return { status: HttpStatus.OK, message: 'deleted' };
     }
 
     public async getRepositories({ name }: GetRepositoriesDto) {

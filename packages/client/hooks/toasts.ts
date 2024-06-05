@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
-export const useError = (text: string, error: unknown[]) => {
+export const useError = (text: string | boolean, error: unknown) => {
     useEffect(() => {
         if (error) toast(text, { type: 'error', theme: 'dark' });
     }, [error]);

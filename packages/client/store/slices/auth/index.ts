@@ -71,8 +71,7 @@ const authSlice = createSliceWithThunks({
         ),
         refresh: create.asyncThunk(
             async (_) => {
-                const user = await authService.refresh();
-                return user;
+                return await authService.refresh();
             },
             {
                 settled: (state) => {

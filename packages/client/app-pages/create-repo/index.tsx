@@ -1,20 +1,28 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 
 import { CreateRepoForm } from '@/app/[locale]/(with-header)/create-repo/types';
 import { generateCreateRepoSchema } from '@/app-pages/create-repo/validation';
 import { Button, CircularProgress, Switch, TextField } from '@/components/mui';
+import { useAppSelector } from '@/hooks/redux-toolkit';
 import { useRolesRedirect } from '@/hooks/roles-redirect';
+import { useError } from '@/hooks/toasts';
 import { useCreateMutation } from '@/store/quries/repositories';
+import { selectAuth } from '@/store/slices/auth/selectors';
+import { isError } from '@/utils/is-error';
 
 import { Main } from './style';
 
 export const CreateRepoPage = () => {
     useRolesRedirect();
     const t = useTranslations('create-repo');
+    const locale = useLocale();
+    const router = useRouter();
+    const { username } = useAppSelector(selectAuth);
     const {
         register,
         handleSubmit,
@@ -27,11 +35,13 @@ export const CreateRepoPage = () => {
         mode: 'onTouched',
     });
 
-    const [create, { isLoading }] = useCreateMutation();
-
-    const onSubmit = handleSubmit((data) => {
-        create(data);
+    const [create, { isLoading, error }] = useCreateMutation();
+    const onSubmit = handleSubmit(async (data) => {
+        const response = await create(data);
+        if (!response.error)
+            router.push(`/${locale}/repository/${username}/${data.repoName}`);
     });
+    useError(isError(error) && t(error.message), error);
 
     return (
         <Main>

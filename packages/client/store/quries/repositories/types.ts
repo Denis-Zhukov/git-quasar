@@ -16,6 +16,7 @@ export interface GetRepositoryResponse {
     mainBranch: string;
     favorite: boolean;
     owner: boolean;
+    isEmpty: boolean;
 }
 
 export interface GetFileData {
@@ -23,6 +24,7 @@ export interface GetFileData {
     repository: string;
     filepath: string;
     branch: string;
+    blame: boolean;
 }
 
 export interface GetFileResponse {
@@ -63,6 +65,11 @@ export type GetCollaboratorsResponse = {
 
 export interface RemoveCollaboratorData {
     collaboratorId: string;
+    username: string;
+    repository: string;
+}
+
+export interface DeleteRepositoryData {
     username: string;
     repository: string;
 }

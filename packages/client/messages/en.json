@@ -3,7 +3,7 @@
     "username": "Username/email",
     "password": "Password",
     "sign-in": "Sign In",
-    "to-register-text": "Don't have account?",
+    "to-register-text": "Don't have an account?",
     "to-register": "Sign Up",
     "login-error": "Username/email is required",
     "password-error": "Password is required",
@@ -33,7 +33,7 @@
       "different": "Passwords do not match"
     },
     "sign-up": "Sign Up",
-    "to-login-text": "Don't have an account?",
+    "to-login-text": "Already have an account?",
     "to-login": "Sign In",
     "success": "Account has been created",
     "need-confirm": "E-mail confirmation letter sent"
@@ -68,6 +68,7 @@
   },
   "create-repo": {
     "title": "Creating a repository",
+    "already-exists": "Repository with current name already exists",
     "name": {
       "label": "Repository name",
       "required": "Repository name is required",
@@ -134,7 +135,10 @@
       "username": "Username",
       "add-collaborator": "Add collaborator",
       "collaborator-required": "Collaborator username is required",
-      "no-collaborators": "No collaborators"
+      "no-collaborators": "No collaborators",
+      "no-such-collaborator": "No such collaborator by username",
+      "you-owner": "You cannot add yourself",
+      "already-exists": "User is already a collaborator"
     }
   }
 }

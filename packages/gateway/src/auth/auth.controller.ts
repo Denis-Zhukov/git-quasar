@@ -59,14 +59,15 @@ export class AuthController {
     }
 
     @Post('refresh')
-    public async refresh(@Req() req: Request) {
+    public async refresh(@Req() req: Request, @Res() res: Response) {
         try {
             const refreshToken = req.cookies['refresh-token'];
             const response = this.accountRmq.send('account.auth.refresh', {
                 refreshToken,
             });
 
-            return await firstValueFrom(response);
+            const { status, ...data } = await firstValueFrom(response);
+            res.status(status).json(data);
         } catch (e) {
             throw new UnauthorizedException();
         }

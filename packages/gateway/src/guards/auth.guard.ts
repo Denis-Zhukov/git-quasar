@@ -1,8 +1,10 @@
 import {
     CanActivate,
     ExecutionContext,
+    HttpStatus,
     Inject,
     Injectable,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ClientProxy } from '@nestjs/microservices';
@@ -29,8 +31,16 @@ export class RolesGuard implements CanActivate {
         const accessToken = req.header('Authorization')?.split(' ')?.[1];
 
         const response = this.rmq.send('account.auth.check', { accessToken });
-        const { id, roles }: { id: string; roles: string } =
+        const {
+            id,
+            roles,
+            status,
+        }: { id: string; roles: string; status: HttpStatus } =
             await firstValueFrom(response);
+
+        if (status === HttpStatus.UNAUTHORIZED)
+            throw new UnauthorizedException();
+
         res.locals = { user: { id, roles } };
 
         if (!id) {

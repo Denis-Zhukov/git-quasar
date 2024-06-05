@@ -38,7 +38,10 @@ export const RepositoryNav = styled.nav`
 export const HeaderRepository = styled.div`
     ${({ theme }) => css`
         display: flex;
-        justify-content: space-between;
+
+        button:nth-child(2) {
+            margin-left: auto;
+        }
     `}
 `;
 export const GetRepository = styled(Menu)`
@@ -70,6 +73,11 @@ export const Explorer = styled.div`
 
         ul {
             list-style: none;
+        }
+
+        > *:nth-child(2) {
+            grid-row: 1/3;
+            grid-column: 2/3;
         }
     `}
 `;

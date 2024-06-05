@@ -1,9 +1,11 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Response } from 'express';
 
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
+import { DeleteRepositoryDto } from './dto/delete-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
@@ -57,6 +59,11 @@ export class RepositoryController {
     @MessagePattern('repository.create')
     async createRepository(@Payload() dto: CreateRepositoryDto) {
         return await this.service.createRepository(dto);
+    }
+
+    @MessagePattern('repository.delete')
+    async deleteRepository(@Payload() dto: DeleteRepositoryDto) {
+        return await this.service.deleteRepository(dto);
     }
 
     @MessagePattern('repository.all.name')
@@ -113,5 +120,22 @@ export class RepositoryController {
     @MessagePattern('repository.collaborator.remove')
     async removeCollaborator(@Payload() dto: RemoveCollaboratorDto) {
         return await this.service.removeCollaborator(dto);
+    }
+
+    @Get('/blame/:username/:repository')
+    async blame(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+        @Query('filepath') filepath: string,
+        @Query('branch') branch: string,
+        @Res() res: Response,
+    ) {
+        const { status, ...rest } = await this.service.blame({
+            username,
+            repository,
+            filepath,
+            branch,
+        });
+        res.status(status).json({ ...rest, path: filepath });
     }
 }

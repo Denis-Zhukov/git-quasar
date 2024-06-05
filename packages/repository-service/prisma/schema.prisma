@@ -33,7 +33,7 @@ model Branch {
   repositoryId String @map("repository_id")
   name         String @unique
 
-  repository Repository @relation(fields: [repositoryId], references: [id])
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 
   @@map("branches")
 }
@@ -42,7 +42,7 @@ model Collaborator {
   repositoryId String @map("repository_id")
   userId       String @unique @map("user_id")
 
-  repository Repository @relation(fields: [repositoryId], references: [id])
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 
   @@map("collaborators")
 }
@@ -63,7 +63,7 @@ model Issue {
   closed       Boolean  @default(false)
   createdAt    DateTime @default(now()) @map("created_at")
 
-  repository   Repository     @relation(fields: [repositoryId], references: [id])
+  repository   Repository     @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   IssueMessage IssueMessage[]
 
   @@map("issues")
@@ -79,5 +79,5 @@ model IssueMessage {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt() @map("updated_at")
 
-  issue Issue @relation(fields: [issueId], references: [id])
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
 }

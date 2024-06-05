@@ -10,12 +10,13 @@ import {
 } from '@/app-pages/repository-settings/collaborators/style';
 import { generateCollaboratorSchema } from '@/app-pages/repository-settings/collaborators/validation';
 import { Button, TextField } from '@/components/mui';
-import { useSuccess } from '@/hooks/toasts';
+import { useError, useSuccess } from '@/hooks/toasts';
 import {
     useAddCollaboratorMutation,
     useGetCollaboratorsQuery,
     useRemoveCollaboratorMutation,
 } from '@/store/quries/repositories';
+import { isError } from '@/utils/is-error';
 
 import { CollaboratorsForm, CollaboratorsProps } from './types';
 
@@ -29,7 +30,7 @@ export const Collaborators = ({ username, repository }: CollaboratorsProps) => {
         resolver: yupResolver(generateCollaboratorSchema(t)),
     });
 
-    const [addCollaborator, { isSuccess: added }] =
+    const [addCollaborator, { isSuccess: added, error }] =
         useAddCollaboratorMutation();
     const onSubmit = handleSubmit(({ collaborator }) => {
         addCollaborator({ collaborator, username, repository });
@@ -46,7 +47,9 @@ export const Collaborators = ({ username, repository }: CollaboratorsProps) => {
     const handleRemoveCollaborator = (collaboratorId: string) => () => {
         removeCollaborator({ collaboratorId, username, repository });
     };
+
     useSuccess('Участник удален', removed);
+    useError(isError(error) && t(error?.message), error);
 
     return (
         <Tab>
