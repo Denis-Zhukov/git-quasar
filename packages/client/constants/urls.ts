@@ -54,4 +54,8 @@ export const URLS = {
     accountStatistics: `${BACKEND_URL}/statistics/create-account`,
     generateGetStatisticCommits: (username: string, repository: string) =>
         `${BACKEND_URL}/statistics/commits/${username}/${repository}`,
+    createPullRequest: `${BACKEND_URL}/pull-requests/create`,
+    generateGetPullRequest: (id: string) =>
+        `${BACKEND_URL}/pull-requests/${id}`,
+    merge: `${BACKEND_URL}/pull-requests/merge`,
 } as const;

@@ -4,10 +4,12 @@ import { Response } from 'express';
 
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
+import { CreatePullRequestDto } from './dto/create-pull-request.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { DeleteRepositoryDto } from './dto/delete-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
+import { MergeDto } from './dto/merge.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
 import { RemoveCollaboratorDto } from './dto/remove-collaborator.dto';
 import { RepositoryService } from './repository.service';
@@ -143,14 +145,33 @@ export class RepositoryController {
     async getStatisticsCommits(
         @Param('username') username: string,
         @Param('repository') repository: string,
-        @Query('branch') branch: string,
         @Res() res: Response,
     ) {
         const { status, ...rest } = await this.service.getStatisticsCommits(
             username,
             repository,
-            branch,
         );
+        res.status(status).json({ ...rest });
+    }
+
+    @MessagePattern('repository.pull-requests.create')
+    async createPullRequest(dto: CreatePullRequestDto) {
+        return await this.service.createPullRequest(dto);
+    }
+
+    @MessagePattern('repository.pull-requests.merge')
+    async merge(dto: MergeDto) {
+        try {
+            return await this.service.merge(dto);
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+    }
+
+    @Get('/pull-request/:id')
+    async getPullRequest(@Param('id') id: string, @Res() res: Response) {
+        const { status, ...rest } = await this.service.getPullRequest(id);
         res.status(status).json({ ...rest });
     }
 }

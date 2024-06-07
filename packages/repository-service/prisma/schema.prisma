@@ -25,6 +25,7 @@ model Repository {
   Branch       Branch[]
   Collaborator Collaborator[]
   Issue        Issue[]
+  PullRequest  PullRequest[]
 
   @@map("repositories")
 }
@@ -80,4 +81,31 @@ model IssueMessage {
   updatedAt DateTime @updatedAt() @map("updated_at")
 
   issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@map("issue_messages")
+}
+
+model PullRequest {
+  id           String   @id @default(uuid())
+  repositoryId String   @map("repository_id")
+  creatorId    String   @map("creator_id")
+  destination  String
+  source       String
+  merged       Boolean  @default(false)
+  title        String
+  content      String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  repository Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  @@map("pull_requests")
+}
+
+model PullRequestMessage {
+  id            String @id @default(uuid())
+  pullRequestId String @map("pull_request_id")
+  content       String
+  userId        String @map("user_id")
+
+  @@map("pull_request_messages")
 }

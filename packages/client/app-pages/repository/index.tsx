@@ -87,6 +87,11 @@ export const RepositoryPage = ({
                     {t('issues')}
                 </Link>
                 <Link
+                    href={`/${locale}/repository/${username}/${repository}/pull-requests`}
+                >
+                    {t('pull-requests')}
+                </Link>
+                <Link
                     href={`/${locale}/repository/${username}/${repository}/statistics`}
                 >
                     {t('statistics')}

@@ -15,11 +15,13 @@ import { DatabaseService } from '../database/database.service';
 import { AddCollaboratorDto } from './dto/add-collaborator.dto';
 import { BlameDto } from './dto/blame.dto';
 import { CreateIssueDto } from './dto/create-issue.dto';
+import { CreatePullRequestDto } from './dto/create-pull-request.dto';
 import { CreateRepositoryDto } from './dto/create-repository.dto';
 import { DeleteRepositoryDto } from './dto/delete-repository.dto';
 import { FavoriteRepoDto } from './dto/favorite-repo.dto';
 import { GetCollaboratorsDto } from './dto/get-collaborators.dto';
 import { GetRepositoriesDto } from './dto/get-repositories.dto';
+import { MergeDto } from './dto/merge.dto';
 import { MessageIssueDto } from './dto/message-issue.dto';
 import { RemoveCollaboratorDto } from './dto/remove-collaborator.dto';
 
@@ -459,11 +461,7 @@ export class RepositoryService {
         return { status: HttpStatus.OK, message: 'done' };
     }
 
-    public async getStatisticsCommits(
-        username: string,
-        repository: string,
-        branch: string,
-    ) {
+    public async getStatisticsCommits(username: string, repository: string) {
         const owner = await this.getUserByName(username);
         if (!owner)
             return { status: HttpStatus.NOT_FOUND, message: 'no-such-owner' };
@@ -492,5 +490,104 @@ export class RepositoryService {
             status: HttpStatus.OK,
             message: 'get',
         };
+    }
+
+    public async createPullRequest({
+        repository,
+        username,
+        userId,
+        source,
+        destination,
+    }: CreatePullRequestDto) {
+        const owner = await this.getUserByName(username);
+        if (!owner)
+            return { status: HttpStatus.NOT_FOUND, message: 'no-such-owner' };
+
+        const gitdir = path.join(
+            process.cwd(),
+            'repositories',
+            owner.id,
+            repository,
+        );
+
+        const repo = await this.db.repository.findFirst({
+            where: { userId: owner.id, name: repository },
+        });
+
+        if (!repo)
+            return { status: HttpStatus.BAD_REQUEST, message: 'no-such-repo' };
+
+        const branches = await git.listBranches({ fs, gitdir });
+        if (!branches.includes(source)) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'no-such-source-branch',
+            };
+        }
+        if (!branches.includes(destination)) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'no-such-destination-branch',
+            };
+        }
+
+        const { id } = await this.db.pullRequest.create({
+            data: {
+                repositoryId: repo.id,
+                source,
+                destination,
+                creatorId: userId,
+                title: '',
+                content: '',
+            },
+        });
+
+        return { status: HttpStatus.CREATED, message: 'created', id };
+    }
+
+    public async getPullRequest(id: string) {
+        const pr = await this.db.pullRequest.findUnique({ where: { id } });
+        if (!pr) {
+            return {
+                status: HttpStatus.BAD_REQUEST,
+                message: 'no-such-pr',
+            };
+        }
+        return { ...pr, status: HttpStatus.OK, message: 'get' };
+    }
+
+    public async merge({ userId, pullRequestId }: MergeDto) {
+        const pr = await this.db.pullRequest.findUnique({
+            where: { id: pullRequestId },
+            include: { repository: true },
+        });
+
+        const { destination, source } = pr;
+
+        const gitdir = path.join(
+            process.cwd(),
+            'repositories',
+            pr.repository.userId,
+            pr.repository.name,
+        );
+
+        const tempDir = await tmp.dir({ unsafeCleanup: true });
+
+        const git = simpleGit(tempDir.path);
+
+        await git.clone(gitdir, tempDir.path);
+        await git.fetch([gitdir, `${source}:${source}`]);
+        await git.mergeFromTo(source, destination);
+
+        const result = await git.push(gitdir, destination);
+
+        await this.db.pullRequest.update({
+            where: { id: pullRequestId },
+            data: { merged: true },
+        });
+
+        await tempDir.cleanup();
+
+        return { ...result, message: 'merged', status: HttpStatus.CREATED };
     }
 }
