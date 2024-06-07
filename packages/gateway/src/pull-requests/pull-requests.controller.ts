@@ -21,19 +21,20 @@ export class PullRequestsController {
 
     @Post('/create')
     @UseGuards(RolesGuard)
-    create(@Body() body: object, @Res() res: Response) {
+    async create(@Body() body: object, @Res() res: Response) {
         const { user } = res.locals;
 
         const response = this.rmq.send('repository.pull-requests.create', {
             ...body,
             userId: user.id,
         });
-        return firstValueFrom(response);
+        const { status, ...rest } = await firstValueFrom(response);
+        res.json(status).json(rest);
     }
 
     @Get('/:id')
     @Redirect()
-    async getFavorites(@Param('id') id: string) {
+    async getPullRequests(@Param('id') id: string) {
         const url = new URL(
             `repository/pull-request/${id}`,
             process.env.REPOSITORY_HOST,
@@ -53,5 +54,19 @@ export class PullRequestsController {
         });
         const { status, ...rest } = await firstValueFrom(response);
         return res.status(status).json(rest);
+    }
+
+    @Get('/:username/:repository')
+    @Redirect()
+    async getIssues(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+    ) {
+        const url = new URL(
+            `/repository/${username}/${repository}/pull-requests`,
+            process.env.REPOSITORY_HOST,
+        );
+
+        return { url };
     }
 }

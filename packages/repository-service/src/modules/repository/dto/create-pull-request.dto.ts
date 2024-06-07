@@ -7,6 +7,14 @@ export class CreatePullRequestDto {
 
     @IsString()
     @IsNotEmpty()
+        title: string;
+
+    @IsString()
+    @IsNotEmpty()
+        content: string;
+
+    @IsString()
+    @IsNotEmpty()
         username: string;
 
     @IsString()

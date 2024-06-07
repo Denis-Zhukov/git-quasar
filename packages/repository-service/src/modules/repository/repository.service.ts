@@ -319,6 +319,19 @@ export class RepositoryService {
         return issues;
     }
 
+    public async getPullRequests(username: string, repository: string) {
+        const userId = await this.getUserId(username);
+        const repo = await this.db.repository.findFirst({
+            where: { userId, name: repository },
+        });
+
+        const prs = await this.db.pullRequest.findMany({
+            where: { repositoryId: repo.id },
+        });
+
+        return prs;
+    }
+
     public async getIssue(issue: string) {
         return this.db.issue.findUnique({
             where: { id: issue },
@@ -498,6 +511,8 @@ export class RepositoryService {
         userId,
         source,
         destination,
+        title,
+        content,
     }: CreatePullRequestDto) {
         const owner = await this.getUserByName(username);
         if (!owner)
@@ -537,8 +552,8 @@ export class RepositoryService {
                 source,
                 destination,
                 creatorId: userId,
-                title: '',
-                content: '',
+                title,
+                content,
             },
         });
 

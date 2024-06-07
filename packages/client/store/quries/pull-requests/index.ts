@@ -1,7 +1,12 @@
 import { URLS } from '@/constants/urls';
+import { GetIssuesData, GetIssuesResponse } from '@/store/quries/issues/types';
 
 import { api } from '../api';
-import { CreatePullRequestData, GetPullRequestData } from './types';
+import {
+    CreatePullRequestData,
+    GetPSResponse,
+    GetPullRequestData,
+} from './types';
 
 const pullRequestsApi = api.injectEndpoints({
     endpoints: (build) => ({
@@ -12,7 +17,7 @@ const pullRequestsApi = api.injectEndpoints({
                 method: 'POST',
             }),
         }),
-        getPullRequest: build.query<unknown, GetPullRequestData>({
+        getPullRequest: build.query<GetPSResponse, GetPullRequestData>({
             query: ({ id }) => ({
                 url: URLS.generateGetPullRequest(id),
             }),
@@ -24,6 +29,11 @@ const pullRequestsApi = api.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        getPullRequests: build.query<GetPSResponse[], GetIssuesData>({
+            query: ({ repository, username }) => ({
+                url: URLS.generateGetPRs(username, repository),
+            }),
+        }),
     }),
 });
 
@@ -31,4 +41,5 @@ export const {
     useCreatePullRequestMutation,
     useGetPullRequestQuery,
     useMergeMutation,
+    useGetPullRequestsQuery,
 } = pullRequestsApi;

@@ -45,6 +45,8 @@ export const URLS = {
         `${BACKEND_URL}/issues/create/${username}/${repository}`,
     generateGetIssues: (username: string, repository: string) =>
         `${BACKEND_URL}/issues/${username}/${repository}`,
+    generateGetPRs: (username: string, repository: string) =>
+        `${BACKEND_URL}/pull-requests/${username}/${repository}`,
     generateGetIssue: (issue: string) => `${BACKEND_URL}/issues/${issue}`,
     messageIssue: `${BACKEND_URL}/issues/message`,
     generateToggleBlock: (username: string) =>

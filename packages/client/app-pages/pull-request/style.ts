@@ -2,11 +2,11 @@
 
 import styled, { css } from 'styled-components';
 
-export const Main = styled.form`
+export const Main = styled.main`
     ${({ theme }) => css`
         display: flex;
         flex-direction: column;
-        gap: ${theme.gap.l}px;
+        gap: ${theme.gap.m}px;
         width: 100%;
         max-width: 1440px;
         margin: 80px auto 0;
@@ -14,17 +14,17 @@ export const Main = styled.form`
         background: ${theme.color.mainBg};
         padding: ${theme.gap.m}px;
         flex-grow: 1;
+        align-items: center;
+
+        h1,
+        p {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        button {
+            max-width: 400px;
+            width: 100%;
+        }
     `}
-`;
-
-export const Branches = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-    > *:nth-child(2),
-    > *:nth-child(4) {
-        max-width: 200px;
-        width: 100%;
-    }
 `;

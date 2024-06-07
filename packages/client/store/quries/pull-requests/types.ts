@@ -3,6 +3,8 @@ export interface CreatePullRequestData {
     destination: string;
     username: string;
     repository: string;
+    title: string;
+    content: string;
 }
 
 export interface GetPullRequestData {
@@ -11,4 +13,16 @@ export interface GetPullRequestData {
 
 export interface MergeData {
     pullRequestId: string;
+}
+
+export interface GetPSResponse {
+    content: string;
+    createdAt: string;
+    creatorId: string;
+    destination: string;
+    id: string;
+    merged: boolean;
+    repositoryId: string;
+    source: string;
+    title: string;
 }

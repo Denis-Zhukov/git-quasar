@@ -164,7 +164,6 @@ export class RepositoryController {
         try {
             return await this.service.merge(dto);
         } catch (e) {
-            console.log(e);
             return null;
         }
     }
@@ -173,5 +172,13 @@ export class RepositoryController {
     async getPullRequest(@Param('id') id: string, @Res() res: Response) {
         const { status, ...rest } = await this.service.getPullRequest(id);
         res.status(status).json({ ...rest });
+    }
+
+    @Get('/:username/:repository/pull-requests')
+    async getPullRequests(
+        @Param('username') username: string,
+        @Param('repository') repository: string,
+    ) {
+        return await this.service.getPullRequests(username, repository);
     }
 }
