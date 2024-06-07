@@ -7,9 +7,6 @@ Thumbs.db
 .vscode
 
 # Misc
-.env
-.env.*
-!.env.example
 
 dist
 build
