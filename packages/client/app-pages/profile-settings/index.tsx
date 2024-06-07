@@ -28,7 +28,7 @@ export const ProfileSettingsPage = ({
             <TabContext value={tab}>
                 <TabList orientation="vertical" onChange={handleChange}>
                     <Tab label={t('profile')} value="profile"></Tab>
-                    <Tab label={t('notifications')} value="notifications"></Tab>
+                    {/*<Tab label={t('notifications')} value="notifications"></Tab>*/}
                     <Tab label={t('account')} value="account"></Tab>
                 </TabList>
                 <TabPanel value="profile">

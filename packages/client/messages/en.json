@@ -64,7 +64,13 @@
     "my-repos": "My repositories"
   },
   "main": {
-    "title": "GitQuasar"
+    "title": "GitQuasar",
+    "hosting": "GitQuasar is a Git hosting service that provides developers with a reliable and secure platform to manage their code repositories, collaborate with team members, and deploy applications. The service is designed to simplify the Git workflow and provide advanced features to make development faster and more efficient.",
+    "features": "Some of the key features of GitQuasar",
+    "unlimited": "Unlimited code hosting with Git repositories, making it easy to manage your projects and collaborate with team members track changes, and manage issues.",
+    "tools": "GitQuasar provides project management tools that enable you to track progress and manage tasks",
+    "start": "To get started with GitForge, simply create an account and create a new repository. You can then clone the repository to your local machine and start working on your code. GitForge supports all Git commands and workflows, so you can use it just like any other Git hosting service.",
+    "free": "Our application is completely free for all users. We have purposefully made the core features accessible without any payment, so that everyone can fully experience what our product has to offer. Free access to the app removes financial barriers and makes it maximally accessible to a broad audience. We are confident that this free model will drive rapid growth in the number of active users and the overall popularity of our application."
   },
   "create-repo": {
     "title": "Creating a repository",
@@ -98,7 +104,8 @@
     "issues": "Issues",
     "pull-requests": "Pull requests",
     "settings": "Settings",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "blame": "Blame"
   },
   "profile-settings": {
     "profile": "Profile",

@@ -69,9 +69,12 @@ export const Header = () => {
                     />
                 </Link>
                 <Link href={`/${locale}`}>{t('home')}</Link>
-                <Link href={`/${locale}/repositories`}>{t('repos')}</Link>
+                {authorized && (
+                    <Link href={`/${locale}/profile/${username}/repositories`}>
+                        {t('repos')}
+                    </Link>
+                )}
                 <Link href={`/${locale}/about-us`}>{t('about-us')}</Link>
-                <Link href={`/${locale}/pricing`}>{t('pricing')}</Link>
             </Nav>
 
             <RightBlock>
@@ -125,6 +128,9 @@ export const Header = () => {
                                 )}
                             >
                                 {t('my-repos')}
+                            </MenuItem>
+                            <MenuItem onClick={handleRedirect('create-repo')}>
+                                {t('create-repo')}
                             </MenuItem>
                             {roles.includes('admin') && (
                                 <MenuItem

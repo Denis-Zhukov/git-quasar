@@ -13,6 +13,9 @@ export const Main = styled.main`
         max-width: 1440px;
         width: 100%;
         margin: 80px auto 0;
+        gap: 20px;
+        background: ${theme.color.mainBg};
+        padding: ${theme.gap.m}px;
     `}
 `;
 
@@ -22,6 +25,8 @@ export const CreateIssue = styled(Link)`
         align-self: flex-end;
         color: ${theme.color.primary};
         padding: ${theme.gap.m}px;
+        outline: 1px solid ${theme.color.primary};
+        border-radius: 8px;
     `}
 `;
 

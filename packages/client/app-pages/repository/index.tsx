@@ -103,7 +103,11 @@ export const RepositoryPage = ({
                 </Link>
 
                 {username === currentUsername && data?.owner && (
-                    <Button onClick={handleFavorite} size="small">
+                    <Button
+                        color="warning"
+                        onClick={handleFavorite}
+                        size="small"
+                    >
                         {data?.favorite ? <Favorite /> : <Unfavorite />}
                     </Button>
                 )}
@@ -123,6 +127,7 @@ export const RepositoryPage = ({
                 )}
 
                 <Button
+                    color="warning"
                     id="basic-button"
                     aria-controls={getRepoIsOpen ? 'basic-menu' : undefined}
                     aria-haspopup="true"
@@ -168,16 +173,15 @@ export const RepositoryPage = ({
                 </div>
             ) : (
                 <Explorer>
-                    <h3>{t('directory')}</h3>
+                    <FileTree
+                        onClickFile={handleClickFile}
+                        files={data?.files ?? []}
+                    />
                     <FileObserver
                         content={dataFile?.file ?? ''}
                         path={dataFile?.path ?? ''}
                         blame={blame}
                         onClickBlame={handleBlame}
-                    />
-                    <FileTree
-                        onClickFile={handleClickFile}
-                        files={data?.files ?? []}
                     />
                 </Explorer>
             )}

@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { Breadcrumbs, ToggleButton } from '@/components/mui';
 import { theme } from '@/constants/theme';
 import { parseCode } from '@/utils/parse-blame-code';
@@ -13,6 +15,7 @@ export const FileObserver = ({
     blame,
     onClickBlame,
 }: FileObserverProps) => {
+    const t = useTranslations('repository');
     const crumbs = path.replace(/^.\//, '').split('/');
 
     const { authors, code } = parseCode(content, blame);
@@ -42,13 +45,15 @@ export const FileObserver = ({
                     onChange={onClickBlame(path)}
                     size="small"
                 >
-                    Blame
+                    {t('blame')}
                 </ToggleButton>
             </Header>
 
             <Content>
                 <div>{authors}</div>
-                <div>{code}</div>
+                <div>
+                    {code || 'Тут будет отображен текст выбранного файла'}
+                </div>
             </Content>
         </Observer>
     );

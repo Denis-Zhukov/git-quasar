@@ -13,6 +13,9 @@ export const Block = styled.main`
         margin: 80px auto 0;
         gap: ${theme.gap.m}px;
         color: ${theme.color.primary};
+        background: ${theme.color.mainBg};
+        padding: ${theme.gap.m}px;
+        flex-grow: 1;
     `}
 `;
 
@@ -29,6 +32,7 @@ export const Card = styled(CardMui)`
         flex-direction: column;
         gap: ${theme.gap.m}px;
         padding: ${theme.gap.m}px;
+        background: ${theme.color.darkAccent} !important;
 
         div {
             display: flex;

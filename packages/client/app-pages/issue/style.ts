@@ -14,6 +14,8 @@ export const Main = styled.main`
         width: 100%;
         margin: 80px auto 0;
         color: ${theme.color.primary};
+        background: ${theme.color.mainBg};
+        padding: ${theme.gap.m}px;
     `}
 `;
 

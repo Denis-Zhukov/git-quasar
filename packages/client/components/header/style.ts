@@ -13,6 +13,8 @@ export const Header = styled.header`
         position: fixed;
         left: 0;
         top: 0;
+        background: rgba(15, 18, 20, 0.99);
+        z-index: 999;
     `}
 `;
 

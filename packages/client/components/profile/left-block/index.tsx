@@ -66,9 +66,8 @@ export const LeftBlock = ({
                         {t('edit')}
                     </Button>
                 )}
-                {['admin', 'moderator'].some((role) =>
-                    roles.includes(role),
-                ) && (
+                {['admin', 'moderator'].some((role) => roles.includes(role)) &&
+                    username !== currentUsername && (
                     <Button
                         onClick={handleBlock}
                         variant="outlined"

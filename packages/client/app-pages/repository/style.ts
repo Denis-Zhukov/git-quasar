@@ -12,6 +12,9 @@ export const Block = styled.main`
         width: 100%;
         max-width: 1440px;
         margin: 80px auto 0;
+        background: ${theme.color.mainBg};
+        padding: ${theme.gap.m}px;
+        flex-grow: 1;
     `}
 `;
 
@@ -64,8 +67,8 @@ export const Explorer = styled.div`
     ${({ theme }) => css`
         display: grid;
         grid-template-columns: 250px 1fr;
-        grid-template-rows: 40px 1fr;
         height: 600px;
+        gap: 20px;
 
         h3 {
             color: ${theme.color.primary};
@@ -73,11 +76,6 @@ export const Explorer = styled.div`
 
         ul {
             list-style: none;
-        }
-
-        > *:nth-child(2) {
-            grid-row: 1/3;
-            grid-column: 2/3;
         }
     `}
 `;

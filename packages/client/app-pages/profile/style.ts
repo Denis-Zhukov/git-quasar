@@ -12,6 +12,8 @@ export const Main = styled.main`
         margin: 80px auto 0;
         flex-grow: 1;
         gap: ${theme.gap.xxl}px;
+        background: ${theme.color.mainBg};
+        padding: ${theme.gap.m}px;
 
         @media screen and (max-width: 799px) {
             flex-direction: column;

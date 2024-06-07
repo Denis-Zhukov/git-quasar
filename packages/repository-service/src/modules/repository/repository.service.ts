@@ -303,7 +303,7 @@ export class RepositoryService {
             },
         });
 
-        return { status: HttpStatus.CREATED, message: 'done' };
+        return { status: HttpStatus.CREATED, message: 'done', id: issue.id };
     }
 
     public async getIssues(username: string, repository: string) {

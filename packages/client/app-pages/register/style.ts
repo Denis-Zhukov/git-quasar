@@ -15,6 +15,7 @@ export const RegisterWrapper = styled.div`
             padding: ${theme.gap.xxl}px;
             min-width: 400px;
             outline: 1px solid white;
+            background: ${theme.color.mainBg};
         }
     `}
 `;

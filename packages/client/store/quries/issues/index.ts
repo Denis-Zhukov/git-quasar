@@ -12,7 +12,7 @@ import { api } from '../api';
 
 const issuesApi = api.injectEndpoints({
     endpoints: (build) => ({
-        createIssue: build.mutation<unknown, CreateIssueData>({
+        createIssue: build.mutation<{ id: string }, CreateIssueData>({
             query: ({ repository, usernameOwner, question, title }) => ({
                 body: { title, question },
                 url: URLS.generateCreateIssue(usernameOwner, repository),

@@ -14,6 +14,8 @@ export const Main = styled.main`
             gap: ${theme.gap.m}px;
             margin: 0 auto;
             width: 600px;
+            background: ${theme.color.mainBg};
+            padding: ${theme.gap.m}px;
 
             h1 {
                 font-size: ${theme.fontSize.xl}px;

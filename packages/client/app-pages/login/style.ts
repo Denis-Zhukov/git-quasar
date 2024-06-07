@@ -16,6 +16,7 @@ export const LoginWrapper = styled.div`
             max-width: 400px;
             width: 100%;
             outline: 1px solid white;
+            background: ${theme.color.mainBg};
         }
     `}
 `;

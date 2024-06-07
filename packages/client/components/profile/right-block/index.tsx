@@ -9,7 +9,7 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import { Favorites, RepositoryCard } from '@/app-pages/profile/style';
 import { months } from '@/constants/months';
 
-import { Block } from './style';
+import { Block, Header } from './style';
 import type { RightBlockProps } from './types';
 
 export const RightBlock = ({ bio, username, favorites }: RightBlockProps) => {
@@ -19,10 +19,6 @@ export const RightBlock = ({ bio, username, favorites }: RightBlockProps) => {
 
     return (
         <Block>
-            <Link href={`/${locale}/profile/${username}/repositories`}>
-                Repositories
-            </Link>
-
             <h2>{t('bio')}</h2>
             <p>{bio ?? t('fill-out-bio')}</p>
 

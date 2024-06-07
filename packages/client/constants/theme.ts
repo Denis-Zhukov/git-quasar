@@ -1,9 +1,11 @@
 export const theme = {
     color: {
         accent: '#5a5ade',
+        darkAccent: '#4a4a65',
         primary: '#FFFFFF',
+        second: '#a6a6a6',
         success: '#2db73e',
-        mainBg: 'rgba(15, 18, 20, 0.8)',
+        mainBg: 'rgba(15, 18, 20, 0.88)',
     },
     gap: {
         xxs: 4,
@@ -22,6 +24,7 @@ export const theme = {
         xl: 24,
         xxl: 28,
         xxxl: 32,
+        xxxxl: 48,
     },
     weight: {
         normal: 400,

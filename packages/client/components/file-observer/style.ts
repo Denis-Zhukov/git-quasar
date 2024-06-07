@@ -25,7 +25,10 @@ export const Content = styled.code`
         white-space: pre-wrap;
         overflow-y: scroll;
         color: ${theme.color.primary};
-        padding: 0 ${theme.gap.l}px;
+        padding: 10px ${theme.gap.l}px;
+        outline: 1px solid rgba(89, 103, 117, 0.88);
+        border-radius: 8px;
+        height: 550px;
 
         div:nth-child(1) {
             flex-shrink: 0;
@@ -36,7 +39,6 @@ export const Content = styled.code`
             flex-shrink: 0;
         }
     `}
-
     &::-webkit-scrollbar {
         width: 12px;
         height: 12px;
